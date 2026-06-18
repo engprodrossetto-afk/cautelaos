@@ -1,0 +1,2092 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CautelaOS · Construtora Tripoloni</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+:root{
+  --navy:#0f2744;
+  --navy-light:#1a3a5c;
+  --navy-muted:#2a4a72;
+  --orange:#e8650a;
+  --orange-light:#f97316;
+  --orange-pale:#fff4ed;
+  --green:#15803d;
+  --green-pale:#f0fdf4;
+  --yellow:#b45309;
+  --yellow-pale:#fffbeb;
+  --red:#b91c1c;
+  --red-pale:#fef2f2;
+  --blue:#1d4ed8;
+  --blue-pale:#eff6ff;
+  --slate:#64748b;
+  --slate-light:#94a3b8;
+  --border:#e2e8f0;
+  --bg:#f4f6f8;
+  --surface:#ffffff;
+  --text:#0f172a;
+  --text-muted:#475569;
+  --radius:10px;
+  --radius-sm:7px;
+  --shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:0 4px 12px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.04);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Inter',system-ui,sans-serif;font-size:14px;color:var(--text);background:var(--bg);line-height:1.5}
+
+/* ── LAYOUT ── */
+.app{display:flex;height:100vh}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  width:230px;min-width:230px;
+  background:var(--navy);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+}
+.sidebar-brand{
+  padding:20px 18px 16px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.brand-row{display:flex;align-items:center;gap:10px}
+.brand-icon{
+  width:36px;height:36px;border-radius:9px;
+  background:var(--orange);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;color:#fff;flex-shrink:0;
+}
+.brand-name{font-size:14px;font-weight:700;color:#fff;letter-spacing:-.2px}
+.brand-sub{font-size:11px;color:rgba(255,255,255,.4);margin-top:1px}
+.sidebar-scroll{flex:1;overflow-y:auto;padding:10px 0}
+.sidebar-scroll::-webkit-scrollbar{width:3px}
+.sidebar-scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:4px}
+.nav-group{margin-bottom:4px}
+.nav-group-label{
+  font-size:10px;font-weight:600;letter-spacing:.8px;
+  color:rgba(255,255,255,.3);text-transform:uppercase;
+  padding:10px 18px 5px;
+}
+.nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 18px;cursor:pointer;
+  color:rgba(255,255,255,.6);font-size:13px;font-weight:500;
+  border-radius:0;transition:all .18s ease;
+  border-left:3px solid transparent;
+  position:relative;user-select:none;
+}
+.nav-item:hover{
+  background:rgba(255,255,255,.06);
+  color:rgba(255,255,255,.9);
+  border-left-color:rgba(255,255,255,.2);
+}
+.nav-item.active{
+  background:rgba(232,101,10,.15);
+  color:#fff;
+  border-left-color:var(--orange);
+  font-weight:600;
+}
+.nav-item i{font-size:17px;width:20px;flex-shrink:0}
+.nav-item.active i{color:var(--orange-light)}
+.sidebar-footer{
+  padding:14px 18px;
+  border-top:1px solid rgba(255,255,255,.08);
+}
+.sidebar-user{display:flex;align-items:center;gap:10px}
+.user-avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:var(--navy-muted);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;color:rgba(255,255,255,.8);
+  flex-shrink:0;
+}
+.user-name{font-size:12px;font-weight:600;color:rgba(255,255,255,.8)}
+.user-role{font-size:10px;color:rgba(255,255,255,.35)}
+
+/* ── MAIN ── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+
+/* ── TOPBAR ── */
+.topbar{
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  padding:0 24px;height:56px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.topbar-title{font-size:17px;font-weight:700;color:var(--text);letter-spacing:-.3px}
+.topbar-breadcrumb{font-size:12px;color:var(--slate-light)}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.topbar-date{font-size:12px;color:var(--slate);background:var(--bg);padding:5px 10px;border-radius:6px;font-weight:500}
+.topbar-badge{
+  background:var(--orange-pale);color:var(--orange);
+  font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;
+  border:1px solid rgba(232,101,10,.2);
+}
+
+/* ── CONTENT ── */
+.content{flex:1;overflow-y:auto;padding:24px}
+.content::-webkit-scrollbar{width:5px}
+.content::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:10px}
+.page{display:none}
+.page.active{display:block}
+
+/* ── STAT CARDS ── */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.stat-card{
+  background:var(--surface);border-radius:var(--radius);
+  border:1px solid var(--border);
+  padding:18px 20px;
+  border-left:4px solid var(--border);
+  box-shadow:var(--shadow);
+  transition:box-shadow .2s;
+}
+.stat-card:hover{box-shadow:var(--shadow-md)}
+.stat-card.c-blue{border-left-color:#3b82f6}
+.stat-card.c-orange{border-left-color:var(--orange)}
+.stat-card.c-green{border-left-color:var(--green)}
+.stat-card.c-yellow{border-left-color:#d97706}
+.stat-icon{font-size:22px;margin-bottom:10px}
+.stat-card.c-blue .stat-icon{color:#3b82f6}
+.stat-card.c-orange .stat-icon{color:var(--orange)}
+.stat-card.c-green .stat-icon{color:var(--green)}
+.stat-card.c-yellow .stat-icon{color:#d97706}
+.stat-label{font-size:11px;font-weight:600;color:var(--slate);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.stat-value{font-size:30px;font-weight:700;color:var(--text);line-height:1;letter-spacing:-1px}
+.stat-sub{font-size:12px;color:var(--slate-light);margin-top:4px}
+
+/* ── SECTION HEADER ── */
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.section-title{font-size:13px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:7px}
+.section-title i{font-size:16px;color:var(--slate)}
+
+/* ── CARDS ── */
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);box-shadow:var(--shadow);
+  margin-bottom:18px;
+}
+.card-body{padding:18px 22px}
+.card-table{padding:0;overflow:hidden}
+
+/* ── TABLES ── */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead tr{background:#f8fafc}
+th{
+  text-align:left;padding:11px 14px;
+  font-size:11px;font-weight:700;color:var(--slate);
+  text-transform:uppercase;letter-spacing:.5px;
+  border-bottom:1px solid var(--border);
+  white-space:nowrap;
+}
+td{
+  padding:11px 14px;border-bottom:1px solid #f1f5f9;
+  vertical-align:middle;color:var(--text-muted);
+}
+tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:#fafbfc}
+tbody tr:nth-child(even) td{background:#fafbfc}
+tbody tr:nth-child(even):hover td{background:#f4f6f8}
+.cell-primary{font-weight:600;color:var(--text)}
+.cell-mono{font-family:'Courier New',monospace;font-size:12px;color:var(--slate);background:#f8fafc;padding:2px 6px;border-radius:4px;border:1px solid var(--border)}
+.cell-sub{font-size:11px;color:var(--slate-light);margin-top:2px}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+.b-green{background:var(--green-pale);color:#166534;border:1px solid #bbf7d0}
+.b-blue{background:var(--blue-pale);color:#1e40af;border:1px solid #bfdbfe}
+.b-yellow{background:var(--yellow-pale);color:#92400e;border:1px solid #fde68a}
+.b-gray{background:#f1f5f9;color:#475569;border:1px solid #e2e8f0}
+.b-red{background:var(--red-pale);color:#991b1b;border:1px solid #fecaca}
+.b-orange{background:var(--orange-pale);color:#9a3412;border:1px solid #fed7aa}
+.b-purple{background:#f5f3ff;color:#5b21b6;border:1px solid #ddd6fe}
+
+/* LOC BADGE */
+.loc{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600}
+.loc-alm{background:var(--blue-pale);color:#1e40af}
+.loc-cau{background:#fffbeb;color:#92400e}
+.loc-man{background:#fff4ed;color:#9a3412}
+.loc-ina{background:#f1f5f9;color:#64748b}
+
+/* ── BUTTONS ── */
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 16px;border-radius:var(--radius-sm);
+  border:1px solid var(--border);background:var(--surface);
+  color:var(--text-muted);cursor:pointer;
+  font-size:13px;font-weight:600;font-family:inherit;
+  transition:all .15s;white-space:nowrap;
+  box-shadow:var(--shadow);
+}
+.btn:hover{background:#f8fafc;border-color:#cbd5e1;color:var(--text);box-shadow:var(--shadow-md)}
+.btn-primary{background:var(--orange);color:#fff;border-color:var(--orange);box-shadow:0 2px 6px rgba(232,101,10,.3)}
+.btn-primary:hover{background:#d45d09;border-color:#d45d09;box-shadow:0 4px 12px rgba(232,101,10,.4);color:#fff}
+.btn-success{background:var(--green);color:#fff;border-color:var(--green);box-shadow:0 2px 6px rgba(21,128,61,.25)}
+.btn-success:hover{background:#166534;border-color:#166534;color:#fff;box-shadow:0 4px 10px rgba(21,128,61,.35)}
+.btn-danger{background:var(--red);color:#fff;border-color:var(--red);box-shadow:0 2px 6px rgba(185,28,28,.2)}
+.btn-danger:hover{background:#991b1b;border-color:#991b1b;color:#fff}
+.btn-sm{padding:5px 10px;font-size:12px;border-radius:6px;gap:4px}
+.btn-ghost{background:transparent;border-color:transparent;box-shadow:none;color:var(--slate)}
+.btn-ghost:hover{background:#f1f5f9;border-color:var(--border);color:var(--text);box-shadow:none}
+
+/* ── TOOLBAR ── */
+.toolbar{display:flex;gap:8px;margin-bottom:14px;align-items:center;flex-wrap:wrap}
+.search-wrap{position:relative;flex:1;min-width:220px;max-width:320px}
+.search-wrap i{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--slate-light);font-size:16px;pointer-events:none}
+.search-wrap input{padding:8px 10px 8px 34px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;width:100%;background:var(--surface);color:var(--text);font-family:inherit;transition:border-color .15s,box-shadow .15s}
+.search-wrap input:focus{outline:none;border-color:var(--orange);box-shadow:0 0 0 3px rgba(232,101,10,.1)}
+select.filter{padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;color:var(--text-muted);background:var(--surface);cursor:pointer;font-family:inherit;transition:border-color .15s}
+select.filter:focus{outline:none;border-color:var(--orange)}
+
+/* ── MODALS ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,18,34,.6);z-index:2000;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
+.modal-overlay.open{display:flex}
+.modal{
+  background:var(--surface);border-radius:14px;
+  border:1px solid var(--border);
+  width:640px;max-width:96vw;max-height:93vh;overflow-y:auto;
+  padding:28px;box-shadow:0 24px 60px rgba(0,0,0,.18);
+}
+.modal::-webkit-scrollbar{width:4px}
+.modal::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
+.modal-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:22px;padding-bottom:16px;
+  border-bottom:1px solid var(--border);
+}
+.modal-title{font-size:17px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:10px;letter-spacing:-.2px}
+.modal-title i{font-size:20px;color:var(--orange)}
+.modal-close{cursor:pointer;color:var(--slate-light);background:none;border:none;padding:6px;border-radius:6px;display:flex;align-items:center;font-size:20px;transition:all .15s}
+.modal-close:hover{background:#f1f5f9;color:var(--text)}
+.modal-footer{
+  display:flex;justify-content:flex-end;gap:8px;
+  margin-top:24px;padding-top:18px;border-top:1px solid var(--border);
+}
+
+/* ── FORMS ── */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-grid.full{grid-template-columns:1fr}
+.span2{grid-column:span 2}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-label{font-size:12px;font-weight:600;color:var(--text-muted);letter-spacing:.1px}
+.form-label .req{color:var(--red);margin-left:2px}
+.form-input{
+  padding:9px 12px;border:1px solid var(--border);
+  border-radius:var(--radius-sm);font-size:13px;
+  color:var(--text);background:var(--surface);
+  width:100%;font-family:inherit;
+  transition:border-color .15s,box-shadow .15s;
+}
+.form-input:focus{outline:none;border-color:var(--orange);box-shadow:0 0 0 3px rgba(232,101,10,.1)}
+textarea.form-input{resize:vertical;min-height:72px;line-height:1.5}
+.form-section{
+  grid-column:span 2;margin:4px 0 2px;
+  padding:8px 0 6px;border-bottom:1px solid var(--border);
+  font-size:10px;font-weight:700;color:var(--slate-light);
+  text-transform:uppercase;letter-spacing:.8px;display:flex;align-items:center;gap:6px;
+}
+.form-section i{font-size:13px}
+
+/* ── ALERTS ── */
+.alert{padding:11px 14px;border-radius:var(--radius-sm);font-size:13px;margin-bottom:14px;display:flex;align-items:flex-start;gap:9px;border:1px solid}
+.alert i{font-size:17px;flex-shrink:0;margin-top:1px}
+.alert-info{background:var(--blue-pale);color:#1e40af;border-color:#bfdbfe}
+.alert-warn{background:var(--yellow-pale);color:#92400e;border-color:#fde68a}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:18px}
+.tab{
+  padding:10px 18px;cursor:pointer;font-size:13px;font-weight:600;
+  color:var(--slate);border-bottom:2px solid transparent;
+  margin-bottom:-1px;transition:all .15s;
+}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--orange);border-bottom-color:var(--orange)}
+
+/* ── REPORT FILTER ── */
+.report-filter{
+  background:var(--surface);border-radius:var(--radius);
+  padding:16px 18px;margin-bottom:16px;
+  display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;
+  border:1px solid var(--border);box-shadow:var(--shadow);
+}
+.report-filter .form-group{margin:0;min-width:130px}
+
+/* ── HISTORY ── */
+.hist-timeline{position:relative;padding-left:22px}
+.hist-timeline::before{content:'';position:absolute;left:7px;top:8px;bottom:8px;width:1px;background:var(--border)}
+.hist-item{position:relative;padding:0 0 16px 16px}
+.hist-item:last-child{padding-bottom:0}
+.hist-dot{
+  position:absolute;left:-15px;top:5px;
+  width:10px;height:10px;border-radius:50%;
+  border:2px solid var(--surface);
+  background:var(--blue);
+  box-shadow:0 0 0 1px var(--blue);
+}
+.hist-dot.orange{background:var(--orange);box-shadow:0 0 0 1px var(--orange)}
+.hist-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:12px 14px;
+  box-shadow:var(--shadow);
+}
+.hist-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.hist-meta{font-size:11px;color:var(--slate);line-height:1.6}
+
+/* ── DASH GRID ── */
+.dash-grid{display:grid;grid-template-columns:3fr 2fr;gap:18px}
+.loc-list-item{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:12px;
+}
+.loc-list-item:last-child{border-bottom:none}
+.loc-name{font-weight:500;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;padding-right:10px}
+
+/* ── EMPTY ── */
+.empty{text-align:center;padding:44px 20px;color:var(--slate-light)}
+.empty i{font-size:42px;display:block;margin-bottom:10px;color:#cbd5e1}
+.empty p{font-size:13px;font-weight:500}
+.empty span{font-size:12px;display:block;margin-top:4px}
+
+/* ── DETAIL GRID ── */
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 20px;font-size:13px;margin-bottom:16px}
+.dl{color:var(--slate);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px}
+.dv{color:var(--text);font-weight:500}
+
+/* ── ACTIONS ── */
+.actions{display:flex;gap:5px;align-items:center}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:24px;right:24px;z-index:9999;
+  background:var(--navy);color:#fff;
+  padding:12px 18px;border-radius:var(--radius-sm);
+  font-size:13px;font-weight:500;
+  display:flex;align-items:center;gap:9px;
+  box-shadow:0 8px 24px rgba(0,0,0,.2);
+  transform:translateY(100px);opacity:0;
+  transition:all .3s cubic-bezier(.34,1.56,.64,1);
+  max-width:320px;
+}
+.toast.show{transform:translateY(0);opacity:1}
+.toast i{font-size:18px;color:var(--orange-light)}
+
+/* ── BOTTOM NAV (mobile only) ── */
+.bottom-nav{display:none}
+
+/* ── LOGIN SCREEN ── */
+.login-screen{
+  position:fixed;inset:0;z-index:5000;
+  background:var(--navy);
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+}
+.login-card{
+  background:var(--surface);border-radius:16px;
+  width:380px;max-width:100%;padding:36px 32px;
+  box-shadow:0 24px 60px rgba(0,0,0,.3);
+}
+.login-brand{display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:28px}
+.login-brand .brand-icon{width:52px;height:52px;font-size:26px;border-radius:14px}
+.login-brand h1{font-size:19px;font-weight:700;color:var(--text);letter-spacing:-.3px}
+.login-brand p{font-size:12px;color:var(--slate);margin-top:2px}
+.login-tabs{display:flex;background:var(--bg);border-radius:9px;padding:3px;margin-bottom:22px}
+.login-tab{flex:1;text-align:center;padding:8px 0;font-size:13px;font-weight:600;color:var(--slate);cursor:pointer;border-radius:7px;transition:all .15s}
+.login-tab.active{background:var(--surface);color:var(--text);box-shadow:var(--shadow)}
+.login-form{display:flex;flex-direction:column;gap:14px}
+.login-error{
+  background:var(--red-pale);color:#991b1b;border:1px solid #fecaca;
+  padding:10px 12px;border-radius:8px;font-size:12.5px;
+  display:none;align-items:flex-start;gap:7px;
+}
+.login-error.show{display:flex}
+.login-btn{
+  margin-top:6px;width:100%;justify-content:center;
+  padding:11px 0;font-size:14px;
+}
+.login-footer{text-align:center;margin-top:18px;font-size:12px;color:var(--slate-light)}
+.login-spin{display:inline-block;animation:spin 0.8s linear infinite}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.app{display:none}
+.app.ready{display:flex}
+
+/* ── USER MENU ── */
+.user-menu-trigger{cursor:pointer;display:flex;align-items:center;gap:8px}
+.logout-link{font-size:11px;color:var(--slate-light);cursor:pointer;text-decoration:underline;margin-top:1px}
+.logout-link:hover{color:var(--red)}
+@media(max-width:768px){
+  /* Esconde sidebar lateral inteiramente */
+  .sidebar{display:none}
+
+  /* App ocupa tela inteira */
+  .app{flex-direction:column}
+  .main{height:100dvh;height:100vh}
+
+  /* Topbar compacta */
+  .topbar{padding:0 14px;height:48px}
+  .topbar-title{font-size:15px}
+  .topbar-date{display:none}
+  .topbar-badge{font-size:10px;padding:3px 8px}
+
+  /* Content com espaço para bottom nav */
+  .content{padding:14px 12px 80px}
+
+  /* Stats 2 colunas */
+  .stats-grid{grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+  .stat-card{padding:12px 14px}
+  .stat-icon{font-size:18px;margin-bottom:6px}
+  .stat-value{font-size:24px}
+  .stat-label{font-size:10px}
+  .stat-sub{font-size:11px}
+
+  /* Dashboard grid coluna única */
+  .dash-grid{grid-template-columns:1fr}
+
+  /* Formulários coluna única */
+  .form-grid{grid-template-columns:1fr !important}
+  .span2{grid-column:span 1 !important}
+  .form-section{grid-column:span 1 !important}
+  .form-input{font-size:16px} /* evita zoom automático iOS */
+
+  /* Toolbar empilha */
+  .toolbar{gap:8px}
+  .toolbar .search-wrap{min-width:0;max-width:100%;flex:1 1 100%}
+  .toolbar select.filter{flex:1;min-width:0}
+  .toolbar .btn-primary{width:100%;justify-content:center}
+
+  /* Tabelas: scroll horizontal + células mínimas */
+  .card.card-table{border-radius:var(--radius);overflow:hidden}
+  .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  table{min-width:520px}
+  th,td{padding:9px 10px;font-size:12px}
+
+  /* Modais full-screen no mobile */
+  .modal-overlay{align-items:flex-end}
+  .modal{
+    width:100% !important;max-width:100% !important;
+    border-radius:18px 18px 0 0;
+    max-height:92dvh;max-height:92vh;
+    padding:20px 18px 28px;
+  }
+  .modal-header{margin-bottom:16px;padding-bottom:12px}
+  .modal-title{font-size:15px}
+  .modal-footer{gap:10px}
+  .modal-footer .btn{flex:1;justify-content:center}
+
+  /* Cards */
+  .card-body{padding:14px 16px}
+
+  /* Tabs scroll horizontal */
+  .tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap}
+  .tab{white-space:nowrap;padding:9px 14px;font-size:12px}
+
+  /* Report filter empilha */
+  .report-filter{flex-direction:column;gap:10px}
+  .report-filter .form-group{min-width:0;width:100%}
+  .report-filter input,.report-filter select{width:100% !important;font-size:16px}
+
+  /* Histórico grid coluna única */
+  .detail-grid{grid-template-columns:1fr}
+
+  /* Hist grid lado a lado → coluna */
+  #hist-result [style*="grid-template-columns:1fr 1fr"]{
+    grid-template-columns:1fr !important;
+  }
+
+  /* Alert compacto */
+  .alert{font-size:12px;padding:9px 12px}
+
+  /* Toast mais curto */
+  .toast{bottom:80px;right:12px;left:12px;max-width:100%}
+
+  /* Bottom Navigation */
+  .bottom-nav{
+    display:flex;
+    position:fixed;bottom:0;left:0;right:0;
+    background:var(--navy);
+    border-top:1px solid rgba(255,255,255,.08);
+    z-index:500;
+    padding:0;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .bnav-item{
+    flex:1;display:flex;flex-direction:column;align-items:center;
+    gap:3px;padding:8px 4px 6px;cursor:pointer;
+    color:rgba(255,255,255,.4);font-size:10px;font-weight:600;
+    border-top:2px solid transparent;transition:all .15s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .bnav-item i{font-size:22px;line-height:1}
+  .bnav-item.active{color:#fff;border-top-color:var(--orange)}
+  .bnav-item.active i{color:var(--orange-light)}
+
+  /* More menu */
+  .more-menu{
+    display:none;position:fixed;bottom:60px;right:0;left:0;
+    background:var(--navy);border-top:1px solid rgba(255,255,255,.1);
+    z-index:499;padding:8px 0;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .more-menu.open{display:block}
+  .more-menu-item{
+    display:flex;align-items:center;gap:12px;
+    padding:12px 20px;cursor:pointer;
+    color:rgba(255,255,255,.7);font-size:14px;font-weight:500;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .more-menu-item i{font-size:20px;width:24px;flex-shrink:0}
+  .more-menu-item.active{color:#fff;background:rgba(232,101,10,.15)}
+  .more-menu-item.active i{color:var(--orange-light)}
+  .more-menu-backdrop{
+    display:none;position:fixed;inset:0;z-index:498;
+  }
+  .more-menu-backdrop.open{display:block}
+}
+</style>
+</head>
+<body>
+<!-- ═══════════════ TELA DE LOGIN ═══════════════ -->
+<div class="login-screen" id="login-screen">
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="brand-icon"><i class="ti ti-clipboard-check"></i></div>
+      <h1>CautelaOS</h1>
+      <p>Tripoloni Engenharia — acesso de almoxarifes</p>
+    </div>
+    <div class="login-error" id="login-error"><i class="ti ti-alert-circle" style="font-size:15px;margin-top:1px"></i><span id="login-error-msg"></span></div>
+    <form class="login-form" id="login-form" onsubmit="return false">
+      <div class="form-group">
+        <label class="form-label">Usuário</label>
+        <input class="form-input" id="auth-login" placeholder="Ex: feliperossetto" autocomplete="username" autocapitalize="off" autocorrect="off">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Senha</label>
+        <input class="form-input" id="auth-senha" type="password" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <button class="btn btn-primary login-btn" id="auth-submit-btn" onclick="submitAuth()">
+        <i class="ti ti-login-2"></i><span id="auth-submit-label">Entrar</span>
+      </button>
+    </form>
+    <div class="login-footer">Acesso restrito a colaboradores da Construtora Tripoloni<br>Esqueceu a senha? Procure o administrador do sistema.</div>
+  </div>
+</div>
+
+<!-- ═══════════════ APP PRINCIPAL ═══════════════ -->
+<div class="app" id="app-root">
+
+  <!-- ═══════════════ SIDEBAR ═══════════════ -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-row">
+        <div class="brand-icon"><i class="ti ti-clipboard-check"></i></div>
+        <div>
+          <div class="brand-name">CautelaOS</div>
+          <div class="brand-sub">Tripoloni Engenharia</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-scroll">
+      <nav class="nav-group">
+        <div class="nav-group-label">Visão geral</div>
+        <div class="nav-item active" onclick="navTo('dashboard',this)">
+          <i class="ti ti-layout-dashboard"></i><span>Dashboard</span>
+        </div>
+      </nav>
+      <nav class="nav-group">
+        <div class="nav-group-label">Cadastros</div>
+        <div class="nav-item" onclick="navTo('equipamentos',this)">
+          <i class="ti ti-bulldozer"></i><span>Equipamentos</span>
+        </div>
+        <div class="nav-item" onclick="navTo('colaboradores',this)">
+          <i class="ti ti-id-badge-2"></i><span>Colaboradores</span>
+        </div>
+      </nav>
+      <nav class="nav-group">
+        <div class="nav-group-label">Operação</div>
+        <div class="nav-item" onclick="navTo('cautelas',this)">
+          <i class="ti ti-clipboard-list"></i><span>Cautelas</span>
+        </div>
+        <div class="nav-item" onclick="navTo('manutencao',this)">
+          <i class="ti ti-tool"></i><span>Manutenção</span>
+        </div>
+      </nav>
+      <nav class="nav-group">
+        <div class="nav-group-label">Análise</div>
+        <div class="nav-item" onclick="navTo('relatorios',this)">
+          <i class="ti ti-chart-bar"></i><span>Relatórios</span>
+        </div>
+        <div class="nav-item" onclick="navTo('historico',this)">
+          <i class="ti ti-history"></i><span>Histórico</span>
+        </div>
+      </nav>
+      <nav class="nav-group admin-only" style="display:none">
+        <div class="nav-group-label">Administração</div>
+        <div class="nav-item" onclick="navTo('filiais',this)">
+          <i class="ti ti-building-factory-2"></i><span>Filiais</span>
+        </div>
+        <div class="nav-item" onclick="navTo('usuarios',this)">
+          <i class="ti ti-users-group"></i><span>Usuários</span>
+        </div>
+      </nav>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar" id="user-avatar">--</div>
+        <div>
+          <div class="user-name" id="user-name-display">Carregando...</div>
+          <div class="user-role" id="user-filial-label" style="font-size:10px;color:rgba(255,255,255,.4);margin-top:1px">—</div>
+          <div class="logout-link" onclick="fazerLogout()">Sair</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ═══════════════ MAIN ═══════════════ -->
+  <div class="main">
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div>
+          <div class="topbar-title" id="topbar-title">Dashboard</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <span class="topbar-date" id="topbar-date"></span>
+        <span class="topbar-badge"><i class="ti ti-circle-filled" style="font-size:8px;vertical-align:1px"></i> Sistema ativo</span>
+      </div>
+    </header>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- ─── DASHBOARD ─── -->
+      <div id="page-dashboard" class="page active">
+        <div class="stats-grid" id="dash-stats"></div>
+        <div class="dash-grid">
+          <div class="card card-table">
+            <div class="card-body" style="padding-bottom:0">
+              <div class="section-header">
+                <span class="section-title"><i class="ti ti-clipboard-list"></i>Cautelas ativas</span>
+                <button class="btn btn-ghost btn-sm" onclick="navTo('cautelas',document.querySelector('[onclick*=cautelas]'))">Ver todas <i class="ti ti-arrow-right"></i></button>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table id="dash-cau-table">
+                <thead><tr><th>Equipamento</th><th>Colaborador</th><th>Saída</th><th>Localização</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card card-table">
+            <div class="card-body" style="padding-bottom:8px">
+              <div class="section-header" style="margin-bottom:10px">
+                <span class="section-title"><i class="ti ti-map-pin"></i>Localização geral</span>
+              </div>
+              <div id="dash-loc-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── EQUIPAMENTOS ─── -->
+      <div id="page-equipamentos" class="page">
+        <div class="toolbar">
+          <div class="search-wrap">
+            <i class="ti ti-search"></i>
+            <input type="text" id="eq-search" placeholder="Buscar nome, série, patrimônio..." oninput="renderEqTable()">
+          </div>
+          <select class="filter" id="eq-f-status" onchange="renderEqTable()">
+            <option value="">Todos os status</option>
+            <option value="almoxarifado">No almoxarifado</option>
+            <option value="cautelado">Cautelado</option>
+            <option value="manutencao">Em manutenção</option>
+            <option value="inativo">Inativo / Devolvido</option>
+          </select>
+          <select class="filter" id="eq-f-origem" onchange="renderEqTable()">
+            <option value="">Toda origem</option>
+            <option value="proprio">Próprio</option>
+            <option value="terceiro">Terceiro</option>
+          </select>
+          <button class="btn btn-primary" onclick="openEqModal()"><i class="ti ti-plus"></i>Novo equipamento</button>
+        </div>
+        <div class="card card-table">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Nome / Descrição</th><th>Nº Série</th><th>Origem</th><th>Status</th><th>Localização</th><th style="width:130px">Ações</th></tr></thead>
+              <tbody id="eq-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── COLABORADORES ─── -->
+      <div id="page-colaboradores" class="page">
+        <div class="toolbar">
+          <div class="search-wrap">
+            <i class="ti ti-search"></i>
+            <input type="text" id="col-search" placeholder="Buscar nome ou matrícula..." oninput="renderColTable()">
+          </div>
+          <select class="filter" id="col-f-setor" onchange="renderColTable()">
+            <option value="">Todos os setores</option>
+            <option value="Operação">Operação</option>
+            <option value="Manutenção">Manutenção</option>
+            <option value="Almoxarifado">Almoxarifado</option>
+            <option value="Administrativo">Administrativo</option>
+            <option value="Topografia">Topografia</option>
+            <option value="Segurança">Segurança do trabalho</option>
+          </select>
+          <select class="filter" id="col-f-ativo" onchange="renderColTable()">
+            <option value="">Todos</option>
+            <option value="ativo">Ativos</option>
+            <option value="inativo">Inativos</option>
+          </select>
+          <button class="btn btn-primary" onclick="openColModal()"><i class="ti ti-plus"></i>Novo colaborador</button>
+        </div>
+        <div class="card card-table">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Matrícula</th><th>Nome completo</th><th>Cargo / Setor</th><th>Encarregado</th><th>Status</th><th>Cautelas</th><th style="width:90px">Ações</th></tr></thead>
+              <tbody id="col-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── CAUTELAS ─── -->
+      <div id="page-cautelas" class="page">
+        <div class="alert alert-info"><i class="ti ti-info-circle"></i><div>Apenas equipamentos disponíveis no almoxarifado podem ser cautelados. A localização é atualizada automaticamente ao registrar a saída ou devolução.</div></div>
+        <div class="toolbar">
+          <div class="search-wrap">
+            <i class="ti ti-search"></i>
+            <input type="text" id="cau-search" placeholder="Buscar equipamento ou colaborador..." oninput="renderCauTable()">
+          </div>
+          <select class="filter" id="cau-f-status" onchange="renderCauTable()">
+            <option value="">Todas as cautelas</option>
+            <option value="ativa">Ativas</option>
+            <option value="devolvida">Devolvidas</option>
+          </select>
+          <button class="btn btn-primary" onclick="openCauModal()"><i class="ti ti-plus"></i>Nova cautela</button>
+        </div>
+        <div class="card card-table">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Equipamento</th><th>Colaborador</th><th>Setor</th><th>Saída</th><th>Prev. Devolução</th><th>Devolução</th><th>Status</th><th style="width:110px">Ações</th></tr></thead>
+              <tbody id="cau-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── MANUTENÇÃO ─── -->
+      <div id="page-manutencao" class="page">
+        <div class="toolbar">
+          <div class="search-wrap">
+            <i class="ti ti-search"></i>
+            <input type="text" id="man-search" placeholder="Buscar equipamento ou OS..." oninput="renderManTable()">
+          </div>
+          <select class="filter" id="man-f-status" onchange="renderManTable()">
+            <option value="">Todas as OS</option>
+            <option value="em_andamento">Em andamento</option>
+            <option value="concluida">Concluídas</option>
+          </select>
+          <select class="filter" id="man-f-tipo" onchange="renderManTable()">
+            <option value="">Todos os tipos</option>
+            <option value="corretiva">Corretiva</option>
+            <option value="preventiva">Preventiva</option>
+          </select>
+          <button class="btn btn-primary" onclick="openManModal()"><i class="ti ti-plus"></i>Abrir OS</button>
+        </div>
+        <div class="card card-table">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Equipamento</th><th>Defeito / Serviço</th><th>Prestador</th><th>Tipo</th><th>Entrada</th><th>Previsão</th><th>Custo</th><th>Status</th><th style="width:90px">Ações</th></tr></thead>
+              <tbody id="man-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── RELATÓRIOS ─── -->
+      <div id="page-relatorios" class="page">
+        <div class="tabs">
+          <div class="tab active" onclick="switchTab('rel-geral',this)">Geral / Período</div>
+          <div class="tab" onclick="switchTab('rel-setor',this)">Por setor</div>
+          <div class="tab" onclick="switchTab('rel-colaborador',this)">Por colaborador</div>
+          <div class="tab" onclick="switchTab('rel-manut',this)">Manutenções</div>
+        </div>
+        <div id="rel-geral" class="rel-tab">
+          <div class="report-filter">
+            <div class="form-group"><label class="form-label">De</label><input type="date" class="form-input" id="rel-de" style="width:145px"></div>
+            <div class="form-group"><label class="form-label">Até</label><input type="date" class="form-input" id="rel-ate" style="width:145px"></div>
+            <div class="form-group"><label class="form-label">Status cautela</label><select class="form-input filter" id="rel-status-cau" style="width:145px"><option value="">Todos</option><option value="ativa">Ativas</option><option value="devolvida">Devolvidas</option></select></div>
+            <button class="btn btn-primary" onclick="gerarRelGeral()"><i class="ti ti-chart-bar"></i>Gerar relatório</button>
+          </div>
+          <div id="rel-geral-result"></div>
+        </div>
+        <div id="rel-setor" class="rel-tab" style="display:none">
+          <div class="report-filter">
+            <div class="form-group"><label class="form-label">Setor</label><select class="form-input filter" id="rel-setor-sel" style="width:180px"><option value="">Todos</option><option>Operação</option><option>Manutenção</option><option>Almoxarifado</option><option>Administrativo</option></select></div>
+            <button class="btn btn-primary" onclick="gerarRelSetor()"><i class="ti ti-chart-bar"></i>Gerar</button>
+          </div>
+          <div id="rel-setor-result"></div>
+        </div>
+        <div id="rel-colaborador" class="rel-tab" style="display:none">
+          <div class="report-filter">
+            <div class="form-group"><label class="form-label">Colaborador</label><select class="form-input filter" id="rel-col-sel" style="width:260px"><option value="">Todos os colaboradores</option></select></div>
+            <button class="btn btn-primary" onclick="gerarRelCol()"><i class="ti ti-chart-bar"></i>Gerar</button>
+          </div>
+          <div id="rel-col-result"></div>
+        </div>
+        <div id="rel-manut" class="rel-tab" style="display:none">
+          <div class="report-filter">
+            <div class="form-group"><label class="form-label">Status</label><select class="form-input filter" id="rel-man-status" style="width:160px"><option value="">Todas</option><option value="em_andamento">Em andamento</option><option value="concluida">Concluídas</option></select></div>
+            <div class="form-group"><label class="form-label">Tipo</label><select class="form-input filter" id="rel-man-tipo" style="width:145px"><option value="">Todos</option><option value="corretiva">Corretiva</option><option value="preventiva">Preventiva</option></select></div>
+            <button class="btn btn-primary" onclick="gerarRelManut()"><i class="ti ti-tool"></i>Gerar</button>
+          </div>
+          <div id="rel-manut-result"></div>
+        </div>
+      </div>
+
+      <!-- ─── HISTÓRICO ─── -->
+      <div id="page-historico" class="page">
+        <div class="toolbar">
+          <select class="filter" id="hist-eq-sel" style="min-width:320px;font-size:13px;padding:8px 12px"><option value="">Selecione um equipamento para ver o histórico...</option></select>
+          <button class="btn" onclick="renderHistorico()"><i class="ti ti-history"></i>Ver histórico completo</button>
+        </div>
+        <div id="hist-result"></div>
+      </div>
+
+      <!-- ─── FILIAIS (admin) ─── -->
+      <div id="page-filiais" class="page">
+        <div class="alert alert-info"><i class="ti ti-info-circle"></i><div>Cada equipamento e colaborador pertence a uma filial. Almoxarifes só veem e operam dados da própria filial; administradores veem todas.</div></div>
+        <div class="toolbar">
+          <div class="search-wrap">
+            <i class="ti ti-search"></i>
+            <input type="text" id="fil-search" placeholder="Buscar filial..." oninput="renderFiliaisTable()">
+          </div>
+          <button class="btn btn-primary" onclick="openFilModal()"><i class="ti ti-plus"></i>Nova filial</button>
+        </div>
+        <div class="card card-table">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Nome</th><th>Cidade / UF</th><th>Equipamentos</th><th>Colaboradores</th><th>Status</th><th style="width:90px">Ações</th></tr></thead>
+              <tbody id="fil-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── USUÁRIOS / ALMOXARIFES (admin) ─── -->
+      <div id="page-usuarios" class="page">
+        <div class="alert alert-info"><i class="ti ti-info-circle"></i><div>Crie aqui o login e a senha de cada almoxarife — eles não usam e-mail, apenas um nome de usuário definido por você. Vincule à filial correta para que o acesso funcione.</div></div>
+        <div class="toolbar">
+          <div class="search-wrap">
+            <i class="ti ti-search"></i>
+            <input type="text" id="usr-search" placeholder="Buscar por nome ou login..." oninput="renderUsuariosTable()">
+          </div>
+          <button class="btn btn-ghost" onclick="carregarUsuarios()"><i class="ti ti-refresh"></i>Atualizar lista</button>
+          <button class="btn btn-primary" onclick="openUsrCreateModal()"><i class="ti ti-user-plus"></i>Novo usuário</button>
+        </div>
+        <div class="card card-table">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Nome</th><th>Login</th><th>Papel</th><th>Filial vinculada</th><th>Cadastrado em</th><th style="width:90px">Ações</th></tr></thead>
+              <tbody id="usr-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- TOAST -->
+<div class="toast" id="toast"><i class="ti ti-circle-check"></i><span id="toast-msg"></span></div>
+
+<!-- BOTTOM NAV (mobile) -->
+<div class="more-menu-backdrop" id="more-backdrop" onclick="closeMore()"></div>
+<div class="more-menu" id="more-menu">
+  <div class="more-menu-item" id="bm-cautelas" onclick="navToMobile('cautelas');closeMore()"><i class="ti ti-clipboard-list"></i>Cautelas</div>
+  <div class="more-menu-item" id="bm-manutencao" onclick="navToMobile('manutencao');closeMore()"><i class="ti ti-tool"></i>Manutenção</div>
+  <div class="more-menu-item" id="bm-relatorios" onclick="navToMobile('relatorios');closeMore()"><i class="ti ti-chart-bar"></i>Relatórios</div>
+  <div class="more-menu-item" id="bm-historico" onclick="navToMobile('historico');closeMore()"><i class="ti ti-history"></i>Histórico</div>
+  <div class="more-menu-item admin-only" id="bm-filiais" style="display:none" onclick="navToMobile('filiais');closeMore()"><i class="ti ti-building-factory-2"></i>Filiais</div>
+  <div class="more-menu-item admin-only" id="bm-usuarios" style="display:none" onclick="navToMobile('usuarios');closeMore()"><i class="ti ti-users-group"></i>Usuários</div>
+</div>
+<nav class="bottom-nav" id="bottom-nav">
+  <div class="bnav-item active" id="bn-dashboard" onclick="navToMobile('dashboard')"><i class="ti ti-layout-dashboard"></i>Início</div>
+  <div class="bnav-item" id="bn-equipamentos" onclick="navToMobile('equipamentos')"><i class="ti ti-bulldozer"></i>Equip.</div>
+  <div class="bnav-item" id="bn-colaboradores" onclick="navToMobile('colaboradores')"><i class="ti ti-id-badge-2"></i>Pessoas</div>
+  <div class="bnav-item" id="bn-cautelas" onclick="navToMobile('cautelas')"><i class="ti ti-clipboard-list"></i>Cautelas</div>
+  <div class="bnav-item" id="bn-more" onclick="toggleMore()"><i class="ti ti-dots"></i>Mais</div>
+</nav>
+
+<!-- ══════ MODAL EQUIPAMENTO ══════ -->
+<div class="modal-overlay" id="modal-eq">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title"><i class="ti ti-bulldozer"></i><span id="modal-eq-title">Novo equipamento</span></span>
+      <button class="modal-close" onclick="closeModal('modal-eq')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group span2"><label class="form-label">Nome / Descrição <span class="req">*</span></label><input class="form-input" id="eq-nome" placeholder="Ex: Martelo Rompedor Bosch GSH 16-28"></div>
+      <div class="form-group"><label class="form-label">Número de série <span class="req">*</span></label><input class="form-input" id="eq-serie" placeholder="Ex: SN-2024-001"></div>
+      <div class="form-group"><label class="form-label">Tipo / Categoria</label><input class="form-input" id="eq-tipo" placeholder="Ex: Ferramenta elétrica"></div>
+      <div class="form-group"><label class="form-label">Marca</label><input class="form-input" id="eq-marca" placeholder="Ex: Bosch, CAT, Komatsu..."></div>
+      <div class="form-group"><label class="form-label">Modelo</label><input class="form-input" id="eq-modelo" placeholder="Ex: GSH 16-28"></div>
+      <div class="form-group span2" id="eq-filial-group"><label class="form-label">Filial / Obra <span class="req">*</span></label>
+        <select class="form-input" id="eq-filial"></select>
+      </div>
+      <div class="form-group span2"><label class="form-label">Origem <span class="req">*</span></label>
+        <select class="form-input" id="eq-origem" onchange="toggleOrigem()">
+          <option value="proprio">Próprio — patrimônio Tripoloni</option>
+          <option value="terceiro">Terceiro — locação / comodato</option>
+        </select>
+      </div>
+      <div id="sec-proprio" style="display:contents">
+        <div class="form-section span2"><i class="ti ti-building"></i>Dados patrimoniais</div>
+        <div class="form-group"><label class="form-label">Nº plaqueta de patrimônio <span class="req">*</span></label><input class="form-input" id="eq-patrimonio" placeholder="Ex: TRIP-0042"></div>
+        <div class="form-group"><label class="form-label">Ano de aquisição</label><input class="form-input" id="eq-ano" type="number" min="2000" max="2099" placeholder="Ex: 2022"></div>
+        <div class="form-group"><label class="form-label">Valor de aquisição (R$)</label><input class="form-input" id="eq-valor-aq" type="number" placeholder="0,00"></div>
+        <div class="form-group"><label class="form-label">NF de compra</label><input class="form-input" id="eq-nf-compra" placeholder="Ex: NF-00123"></div>
+      </div>
+      <div id="sec-terceiro" style="display:none;grid-column:span 2">
+        <div class="form-grid">
+          <div class="form-section span2"><i class="ti ti-file-invoice"></i>Dados do fornecedor / contrato</div>
+          <div class="form-group"><label class="form-label">Proprietário / empresa <span class="req">*</span></label><input class="form-input" id="eq-proprietario" placeholder="Ex: Locafort Equipamentos Ltda"></div>
+          <div class="form-group"><label class="form-label">Tipo de vínculo</label>
+            <select class="form-input" id="eq-vinculo"><option value="locacao">Locação</option><option value="comodato">Comodato</option><option value="emprestimo">Empréstimo</option></select>
+          </div>
+          <div class="form-group"><label class="form-label">Nº nota fiscal</label><input class="form-input" id="eq-nf" placeholder="Ex: NF-55012"></div>
+          <div class="form-group"><label class="form-label">Nº contrato</label><input class="form-input" id="eq-contrato" placeholder="Ex: CT-2024-003"></div>
+          <div class="form-group"><label class="form-label">Início do contrato</label><input class="form-input" type="date" id="eq-dt-ini"></div>
+          <div class="form-group"><label class="form-label">Vencimento do contrato</label><input class="form-input" type="date" id="eq-dt-fim"></div>
+          <div class="form-group"><label class="form-label">Valor mensal (R$)</label><input class="form-input" type="number" id="eq-valor-loc" placeholder="0,00"></div>
+          <div class="form-group"><label class="form-label">Contato do proprietário</label><input class="form-input" id="eq-contato" placeholder="Ex: (44) 99999-0000"></div>
+        </div>
+      </div>
+      <div class="form-section span2"><i class="ti ti-info-circle"></i>Situação inicial</div>
+      <div class="form-group"><label class="form-label">Status</label>
+        <select class="form-input" id="eq-status"><option value="almoxarifado">No almoxarifado</option><option value="inativo">Inativo / Já devolvido</option></select>
+      </div>
+      <div class="form-group span2"><label class="form-label">Observações</label><textarea class="form-input" id="eq-obs" placeholder="Notas adicionais sobre o equipamento..."></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-eq')">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarEq()"><i class="ti ti-device-floppy"></i>Salvar equipamento</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ MODAL COLABORADOR ══════ -->
+<div class="modal-overlay" id="modal-col">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title"><i class="ti ti-id-badge-2"></i><span id="modal-col-title">Novo colaborador</span></span>
+      <button class="modal-close" onclick="closeModal('modal-col')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group"><label class="form-label">Matrícula <span class="req">*</span></label><input class="form-input" id="col-matricula" placeholder="Ex: 10234"></div>
+      <div class="form-group"><label class="form-label">Setor <span class="req">*</span></label>
+        <select class="form-input" id="col-setor">
+          <option value="Operação">Operação</option><option value="Manutenção">Manutenção</option>
+          <option value="Almoxarifado">Almoxarifado</option><option value="Administrativo">Administrativo</option>
+          <option value="Topografia">Topografia</option><option value="Segurança">Segurança do trabalho</option>
+        </select>
+      </div>
+      <div class="form-group span2" id="col-filial-group"><label class="form-label">Filial / Obra <span class="req">*</span></label>
+        <select class="form-input" id="col-filial"></select>
+      </div>
+      <div class="form-group span2"><label class="form-label">Nome completo <span class="req">*</span></label><input class="form-input" id="col-nome" placeholder="Ex: Carlos Eduardo da Silva"></div>
+      <div class="form-group span2"><label class="form-label">Nome do encarregado / supervisor</label><input class="form-input" id="col-encarregado" placeholder="Ex: Paulo Roberto Mendes"></div>
+      <div class="form-group"><label class="form-label">Cargo / Função</label><input class="form-input" id="col-cargo" placeholder="Ex: Operador de equipamentos"></div>
+      <div class="form-group"><label class="form-label">Telefone / WhatsApp</label><input class="form-input" id="col-tel" placeholder="Ex: (44) 99999-0000"></div>
+      <div class="form-group"><label class="form-label">CPF</label><input class="form-input" id="col-cpf" placeholder="000.000.000-00"></div>
+      <div class="form-group"><label class="form-label">Status</label>
+        <select class="form-input" id="col-ativo"><option value="ativo">Ativo</option><option value="inativo">Inativo / Demitido</option></select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-col')">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarCol()"><i class="ti ti-device-floppy"></i>Salvar colaborador</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ MODAL CAUTELA ══════ -->
+<div class="modal-overlay" id="modal-cau">
+  <div class="modal" style="width:520px">
+    <div class="modal-header">
+      <span class="modal-title"><i class="ti ti-clipboard-list"></i>Nova cautela</span>
+      <button class="modal-close" onclick="closeModal('modal-cau')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="form-grid full">
+      <div class="form-group"><label class="form-label">Equipamento <span class="req">*</span></label><select class="form-input" id="cau-eq"></select></div>
+      <div class="form-group"><label class="form-label">Colaborador <span class="req">*</span></label><select class="form-input" id="cau-col"></select></div>
+      <div class="form-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="form-group"><label class="form-label">Data de saída <span class="req">*</span></label><input class="form-input" type="date" id="cau-saida"></div>
+        <div class="form-group"><label class="form-label">Previsão de devolução</label><input class="form-input" type="date" id="cau-prev"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Condição na saída</label>
+        <select class="form-input" id="cau-cond"><option value="bom">Bom estado</option><option value="regular">Estado regular</option><option value="avariado">Com ressalvas / avariado</option></select>
+      </div>
+      <div class="form-group"><label class="form-label">Observações / local de uso</label><textarea class="form-input" id="cau-obs" placeholder="Ex: Uso na escavação do Bloco A, BR-163/PA..."></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-cau')">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarCau()"><i class="ti ti-clipboard-check"></i>Registrar cautela</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ MODAL MANUTENÇÃO ══════ -->
+<div class="modal-overlay" id="modal-man">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title"><i class="ti ti-tool"></i><span id="modal-man-title">Abertura de OS — Manutenção</span></span>
+      <button class="modal-close" onclick="closeModal('modal-man')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group span2"><label class="form-label">Equipamento <span class="req">*</span></label><select class="form-input" id="man-eq"></select></div>
+      <div class="form-group span2"><label class="form-label">Descrição do defeito / serviço <span class="req">*</span></label><textarea class="form-input" id="man-defeito" placeholder="Descreva o problema observado..."></textarea></div>
+      <div class="form-group"><label class="form-label">Tipo de manutenção</label>
+        <select class="form-input" id="man-tipo"><option value="corretiva">Corretiva</option><option value="preventiva">Preventiva</option></select>
+      </div>
+      <div class="form-group"><label class="form-label">Nº OS / protocolo</label><input class="form-input" id="man-os" placeholder="Ex: OS-2024-0055"></div>
+      <div class="form-group"><label class="form-label">Prestador / oficina</label><input class="form-input" id="man-prestador" placeholder="Ex: Mecânica Central Maringá"></div>
+      <div class="form-group"><label class="form-label">Telefone do prestador</label><input class="form-input" id="man-tel-prest" placeholder="Ex: (44) 3030-0000"></div>
+      <div class="form-group"><label class="form-label">Data de entrada <span class="req">*</span></label><input class="form-input" type="date" id="man-entrada"></div>
+      <div class="form-group"><label class="form-label">Previsão de retorno</label><input class="form-input" type="date" id="man-prev"></div>
+      <div class="form-group"><label class="form-label">Valor estimado (R$)</label><input class="form-input" type="number" id="man-valor" placeholder="0,00" min="0" step="0.01"></div>
+      <div class="form-group"><label class="form-label">Valor final (R$)</label><input class="form-input" type="number" id="man-valor-final" placeholder="Preencher na conclusão" min="0" step="0.01"></div>
+      <div class="form-group span2"><label class="form-label">Observações</label><textarea class="form-input" id="man-obs" placeholder="Peças necessárias, laudos, garantia..."></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-man')">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarMan()"><i class="ti ti-device-floppy"></i>Registrar OS</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ MODAL DEVOLUÇÃO ══════ -->
+<div class="modal-overlay" id="modal-dev">
+  <div class="modal" style="width:440px">
+    <div class="modal-header">
+      <span class="modal-title"><i class="ti ti-corner-down-left"></i>Registrar devolução</span>
+      <button class="modal-close" onclick="closeModal('modal-dev')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="form-grid full">
+      <div class="alert alert-warn"><i class="ti ti-alert-triangle"></i><div>Se a condição for <strong>"encaminhar para manutenção"</strong>, uma OS será criada automaticamente e o equipamento entrará em status de manutenção.</div></div>
+      <div class="form-group"><label class="form-label">Data de devolução <span class="req">*</span></label><input class="form-input" type="date" id="dev-data"></div>
+      <div class="form-group"><label class="form-label">Condição na devolução</label>
+        <select class="form-input" id="dev-cond">
+          <option value="bom">Bom estado — retornar ao almoxarifado</option>
+          <option value="avariado">Avariado / com dano — retornar ao almoxarifado</option>
+          <option value="manut">Encaminhar para manutenção</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Observações</label><textarea class="form-input" id="dev-obs" placeholder="Descreva a condição observada na devolução..."></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-dev')">Cancelar</button>
+      <button class="btn btn-success" onclick="confirmarDev()"><i class="ti ti-corner-down-left"></i>Confirmar devolução</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ MODAL FILIAL (admin) ══════ -->
+<div class="modal-overlay" id="modal-fil">
+  <div class="modal" style="width:440px">
+    <div class="modal-header">
+      <span class="modal-title"><i class="ti ti-building-factory-2"></i><span id="modal-fil-title">Nova filial</span></span>
+      <button class="modal-close" onclick="closeModal('modal-fil')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="form-grid full">
+      <div class="form-group"><label class="form-label">Nome da filial / obra <span class="req">*</span></label><input class="form-input" id="fil-nome" placeholder="Ex: Obra BR-163/PA"></div>
+      <div class="form-grid" style="display:grid;grid-template-columns:2fr 1fr;gap:14px">
+        <div class="form-group"><label class="form-label">Cidade</label><input class="form-input" id="fil-cidade" placeholder="Ex: Novo Progresso"></div>
+        <div class="form-group"><label class="form-label">UF</label><input class="form-input" id="fil-uf" placeholder="PA" maxlength="2" style="text-transform:uppercase"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Status</label>
+        <select class="form-input" id="fil-ativa"><option value="true">Ativa</option><option value="false">Inativa</option></select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-fil')">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarFil()"><i class="ti ti-device-floppy"></i>Salvar filial</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ MODAL VINCULAR USUÁRIO A FILIAL (admin) ══════ -->
+<div class="modal-overlay" id="modal-usr">
+  <div class="modal" style="width:460px">
+    <div class="modal-header">
+      <span class="modal-title"><i class="ti ti-user-cog"></i><span id="modal-usr-title">Editar acesso do usuário</span></span>
+      <button class="modal-close" onclick="closeModal('modal-usr')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="form-grid full">
+      <div id="usr-create-fields" style="display:none">
+        <div class="form-grid full" style="gap:14px">
+          <div class="form-group"><label class="form-label">Nome completo <span class="req">*</span></label><input class="form-input" id="usr-novo-nome" placeholder="Ex: Carlos Eduardo da Silva"></div>
+          <div class="form-group"><label class="form-label">Login (sem espaços ou acentos) <span class="req">*</span></label><input class="form-input" id="usr-novo-login" placeholder="Ex: carloseduardo" autocapitalize="off" autocorrect="off"></div>
+          <div class="form-group"><label class="form-label">Senha inicial <span class="req">*</span></label><input class="form-input" id="usr-novo-senha" placeholder="Ex: 12345" type="text"></div>
+        </div>
+        <div class="section-divider" style="margin-top:4px"></div>
+      </div>
+      <div class="form-group" id="usr-nome-display-group"><label class="form-label">Nome</label><input class="form-input" id="usr-nome-display" disabled style="background:var(--bg);color:var(--slate)"></div>
+      <div class="form-group"><label class="form-label">Papel</label>
+        <select class="form-input" id="usr-role" onchange="toggleUsrFilialField()"><option value="almoxarife">Almoxarife (restrito à filial)</option><option value="admin">Administrador (vê todas as filiais)</option></select>
+      </div>
+      <div class="form-group" id="usr-filial-group"><label class="form-label">Filial vinculada</label>
+        <select class="form-input" id="usr-filial"></select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-usr')">Cancelar</button>
+      <button class="btn btn-primary" id="usr-save-btn" onclick="salvarUsr()"><i class="ti ti-device-floppy"></i>Salvar acesso</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+//  SUPABASE — CONEXÃO E CAMADA DE DADOS
+// ══════════════════════════════════════════
+var SUPABASE_URL='https://eoijlqjbrvpypzduaqry.supabase.co';
+var SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVvaWpscWpicnZweXB6ZHVhcXJ5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEzNzk5MTEsImV4cCI6MjA5Njk1NTkxMX0.LPPKwoYbTN3TfI740pakl-ZMuhYfH7TH-HD2cJ329mY';
+var sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+
+// ══════════════════════════════════════════
+//  AUTENTICAÇÃO (Supabase Auth com login técnico)
+// ══════════════════════════════════════════
+// O Supabase Auth exige um e-mail internamente, mas o usuário nunca digita
+// ou vê e-mail nenhum: ele digita um "login" (ex: feliperossetto) e por trás
+// dos panos isso vira feliperossetto@cautelaos.local. Contas só são criadas
+// pelo admin (tela Usuários) — não existe autocadastro.
+var EMAIL_DOMAIN='cautelaos.local';
+var CURRENT_USER=null; // {id, email, nome, role, filialId, filialNome}
+var FILIAIS=[]; // cache de todas as filiais (visível a qualquer autenticado)
+
+function normalizeLogin(raw){
+  return(raw||'').trim().toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'') // remove acentos
+    .replace(/[^a-z0-9._-]/g,''); // só caracteres seguros
+}
+function loginToEmail(login){return normalizeLogin(login)+'@'+EMAIL_DOMAIN;}
+function emailToLogin(email){return(email||'').split('@')[0];}
+
+function showAuthError(msg){
+  document.getElementById('login-error-msg').textContent=msg;
+  document.getElementById('login-error').classList.add('show');
+}
+function hideAuthError(){document.getElementById('login-error').classList.remove('show');}
+
+function translateAuthError(msg){
+  if(!msg)return 'Não foi possível completar a operação. Tente novamente.';
+  if(msg.includes('Invalid login credentials'))return 'Usuário ou senha incorretos.';
+  if(msg.includes('Email not confirmed'))return 'Conta não confirmada. Contate o administrador.';
+  return msg;
+}
+
+async function submitAuth(){
+  hideAuthError();
+  var login=document.getElementById('auth-login').value.trim();
+  var senha=document.getElementById('auth-senha').value;
+  if(!login||!senha){showAuthError('Informe usuário e senha.');return;}
+
+  var btn=document.getElementById('auth-submit-btn');
+  var originalLabel=document.getElementById('auth-submit-label').textContent;
+  btn.disabled=true;
+  document.getElementById('auth-submit-label').innerHTML='<i class="ti ti-loader-2 login-spin"></i>';
+
+  try{
+    var{data,error}=await sb.auth.signInWithPassword({email:loginToEmail(login),password:senha});
+    if(error)throw error;
+    await onAuthSuccess();
+  }catch(err){
+    showAuthError(translateAuthError(err.message));
+    btn.disabled=false;
+    document.getElementById('auth-submit-label').textContent=originalLabel;
+  }
+}
+
+async function fazerLogout(){
+  if(!confirm('Sair do CautelaOS?'))return;
+  await sb.auth.signOut();
+  CURRENT_USER=null;
+  document.getElementById('app-root').classList.remove('ready');
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('auth-login').value='';
+  document.getElementById('auth-senha').value='';
+}
+
+async function onAuthSuccess(){
+  var{data:userData}=await sb.auth.getUser();
+  if(!userData||!userData.user){showAuthError('Não foi possível confirmar o login.');return;}
+  var user=userData.user;
+
+  // busca (ou aguarda criação automática via trigger) o perfil do usuário
+  var perfil=null;
+  for(var tentativa=0;tentativa<5;tentativa++){
+    var{data:p,error:pErr}=await sb.from('perfis').select('*, filiais(nome)').eq('id',user.id).maybeSingle();
+    if(p){perfil=p;break;}
+    await new Promise(function(r){setTimeout(r,400);}); // aguarda trigger criar o perfil
+  }
+  CURRENT_USER={
+    id:user.id,
+    email:user.email,
+    nome:perfil?perfil.nome:emailToLogin(user.email),
+    role:perfil?perfil.role:'almoxarife',
+    filialId:perfil?perfil.filial_id:null,
+    filialNome:perfil&&perfil.filiais?perfil.filiais.nome:null
+  };
+
+  // carrega lista de filiais (visível a todos autenticados, para selects)
+  try{
+    var{data:filiaisData,error:filiaisErr}=await sb.from('filiais').select('*').order('nome');
+    if(!filiaisErr)FILIAIS=filiaisData;
+  }catch(e){console.error('Erro ao carregar filiais',e);}
+
+  document.getElementById('user-name-display').textContent=CURRENT_USER.nome;
+  var iniciais=CURRENT_USER.nome.trim().split(/\s+/).slice(0,2).map(function(p){return p[0].toUpperCase();}).join('');
+  document.getElementById('user-avatar').textContent=iniciais||'??';
+
+  // exibe a filial do usuário (ou "Todas as filiais" se admin) no topo
+  var filialLabel=document.getElementById('user-filial-label');
+  if(filialLabel){
+    filialLabel.textContent=CURRENT_USER.role==='admin'?'Administrador · Todas as filiais':(CURRENT_USER.filialNome||'Sem filial definida');
+  }
+
+  // alerta se almoxarife não tem filial vinculada (não consegue operar nada)
+  if(CURRENT_USER.role==='almoxarife'&&!CURRENT_USER.filialId){
+    showToast('Sua conta ainda não tem filial vinculada. Contate o administrador.','ti-alert-triangle');
+  }
+
+  // mostra itens de menu exclusivos de admin
+  document.querySelectorAll('.admin-only').forEach(function(el){
+    el.style.display=CURRENT_USER.role==='admin'?'':'none';
+  });
+
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app-root').classList.add('ready');
+
+  var badge=document.querySelector('.topbar-badge');
+  if(badge)badge.innerHTML='<i class="ti ti-loader-2 login-spin" style="font-size:10px"></i> Conectando...';
+  await loadAllFromSupabase();
+  if(badge)badge.innerHTML='<i class="ti ti-circle-filled" style="font-size:8px;vertical-align:1px"></i> Sistema ativo';
+  renderDash();
+}
+
+// Verifica se já existe sessão ativa ao abrir o app (evita pedir login de novo a cada visita)
+async function checkExistingSession(){
+  var{data}=await sb.auth.getSession();
+  if(data&&data.session){
+    await onAuthSuccess();
+  }
+}
+
+// Permite enviar o formulário de login com Enter
+document.addEventListener('DOMContentLoaded',function(){
+  var loginForm=document.getElementById('login-form');
+  if(loginForm){
+    loginForm.addEventListener('keydown',function(e){
+      if(e.key==='Enter'){e.preventDefault();submitAuth();}
+    });
+  }
+});
+
+// Cache local em memória — a UI sempre lê daqui (síncrono, instantâneo).
+// Toda escrita vai ao Supabase e, em caso de sucesso, atualiza o cache.
+var DB={equipamentos:[],colaboradores:[],cautelas:[],manutencao:[]};
+var editingId={eq:null,col:null,man:null,fil:null,usr:null};
+var devCauId=null;
+var DB_READY=false;
+
+// Mapeia nomes de coluna do banco (snake_case) <-> nomes usados no app (camelCase)
+function rowToEq(r){return{id:r.id,nome:r.nome,serie:r.serie,tipo:r.tipo,marca:r.marca,modelo:r.modelo,origem:r.origem,status:r.status,obs:r.obs,patrimonio:r.patrimonio,ano:r.ano,valorAq:r.valor_aq,nfCompra:r.nf_compra,proprietario:r.proprietario,vinculo:r.vinculo,nf:r.nf,contrato:r.contrato,dtIni:r.dt_ini,dtFim:r.dt_fim,valorLoc:r.valor_loc,contato:r.contato,criadoEm:r.created_at,filialId:r.filial_id};}
+function eqToRow(o){return{nome:o.nome,serie:o.serie,tipo:o.tipo||null,marca:o.marca||null,modelo:o.modelo||null,origem:o.origem,status:o.status,obs:o.obs||null,patrimonio:o.patrimonio||null,ano:o.ano?parseInt(o.ano):null,valor_aq:o.valorAq?parseFloat(o.valorAq):null,nf_compra:o.nfCompra||null,proprietario:o.proprietario||null,vinculo:o.vinculo||null,nf:o.nf||null,contrato:o.contrato||null,dt_ini:o.dtIni||null,dt_fim:o.dtFim||null,valor_loc:o.valorLoc?parseFloat(o.valorLoc):null,contato:o.contato||null,filial_id:o.filialId?parseInt(o.filialId):null};}
+
+function rowToCol(r){return{id:r.id,matricula:r.matricula,nome:r.nome,setor:r.setor,encarregado:r.encarregado,cargo:r.cargo,tel:r.tel,cpf:r.cpf,ativo:r.ativo,criadoEm:r.created_at,filialId:r.filial_id};}
+function colToRow(o){return{matricula:o.matricula,nome:o.nome,setor:o.setor,encarregado:o.encarregado||null,cargo:o.cargo||null,tel:o.tel||null,cpf:o.cpf||null,ativo:o.ativo,filial_id:o.filialId?parseInt(o.filialId):null};}
+
+function rowToFil(r){return{id:r.id,nome:r.nome,cidade:r.cidade,uf:r.uf,ativa:r.ativa,criadoEm:r.created_at};}
+function nomeFilial(filialId){var f=FILIAIS.find(function(x){return x.id===filialId;});return f?f.nome:'—';}
+
+// Preenche um <select> com as filiais disponíveis.
+// Para almoxarife: trava na própria filial (sem opção de trocar).
+// Para admin: lista todas as filiais ativas para escolha livre.
+function preencherSelectFilial(selectId){
+  var sel=document.getElementById(selectId);
+  if(!sel)return;
+  if(CURRENT_USER.role==='admin'){
+    sel.disabled=false;
+    sel.innerHTML=FILIAIS.filter(function(f){return f.ativa;}).map(function(f){return'<option value="'+f.id+'">'+esc(f.nome)+(f.cidade?' — '+esc(f.cidade)+(f.uf?'/'+esc(f.uf):''):'')+'</option>';}).join('');
+  }else{
+    sel.disabled=true;
+    var minhaFil=FILIAIS.find(function(f){return f.id===CURRENT_USER.filialId;});
+    sel.innerHTML=minhaFil?'<option value="'+minhaFil.id+'">'+esc(minhaFil.nome)+'</option>':'<option value="">Nenhuma filial vinculada à sua conta</option>';
+  }
+}
+
+function rowToCau(r){return{id:r.id,eqId:r.equipamento_id,colId:r.colaborador_id,saida:r.saida,prev:r.prev,condSaida:r.cond_saida,obs:r.obs,status:r.status,dataDev:r.data_dev,condDev:r.cond_dev,obsDev:r.obs_dev,registradoPor:r.registrado_por,devolvidoPor:r.devolvido_por};}
+function cauToRow(o){return{equipamento_id:o.eqId,colaborador_id:o.colId,saida:o.saida,prev:o.prev||null,cond_saida:o.condSaida||null,obs:o.obs||null,status:o.status,data_dev:o.dataDev||null,cond_dev:o.condDev||null,obs_dev:o.obsDev||null,registrado_por:o.registradoPor||null,devolvido_por:o.devolvidoPor||null};}
+
+function rowToMan(r){return{id:r.id,eqId:r.equipamento_id,defeito:r.defeito,prestador:r.prestador,telPrest:r.tel_prest,os:r.os,entrada:r.entrada,prev:r.prev,tipo:r.tipo,valor:r.valor,valorFinal:r.valor_final,obs:r.obs,status:r.status,dtConclusao:r.dt_conclusao,criadoEm:r.created_at,registradoPor:r.registrado_por,concluidoPor:r.concluido_por};}
+function manToRow(o){return{equipamento_id:o.eqId,defeito:o.defeito,prestador:o.prestador||null,tel_prest:o.telPrest||null,os:o.os||null,entrada:o.entrada,prev:o.prev||null,tipo:o.tipo,valor:o.valor||0,valor_final:o.valorFinal||0,obs:o.obs||null,status:o.status,dt_conclusao:o.dtConclusao||null,registrado_por:o.registradoPor||null,concluido_por:o.concluidoPor||null};}
+
+function showDbError(err){
+  console.error('Erro Supabase:',err);
+  showToast('Erro de conexão: '+(err.message||'verifique sua internet'),'ti-alert-triangle');
+}
+
+// Carrega tudo do Supabase para o cache local e renderiza a tela atual
+async function loadAllFromSupabase(){
+  try{
+    var[eqR,colR,cauR,manR]=await Promise.all([
+      sb.from('equipamentos').select('*').order('id'),
+      sb.from('colaboradores').select('*').order('id'),
+      sb.from('cautelas').select('*').order('id'),
+      sb.from('manutencao').select('*').order('id')
+    ]);
+    if(eqR.error)throw eqR.error;
+    if(colR.error)throw colR.error;
+    if(cauR.error)throw cauR.error;
+    if(manR.error)throw manR.error;
+    DB.equipamentos=eqR.data.map(rowToEq);
+    DB.colaboradores=colR.data.map(rowToCol);
+    DB.cautelas=cauR.data.map(rowToCau);
+    DB.manutencao=manR.data.map(rowToMan);
+    DB_READY=true;
+  }catch(err){
+    showDbError(err);
+  }
+}
+
+// Re-renderiza a página atualmente visível, mantendo a UI sincronizada após qualquer escrita
+function refreshCurrentPage(){
+  var activePage=document.querySelector('.page.active');
+  if(!activePage)return;
+  var id=activePage.id.replace('page-','');
+  if(id==='dashboard')renderDash();
+  if(id==='equipamentos')renderEqTable();
+  if(id==='colaboradores')renderColTable();
+  if(id==='cautelas')renderCauTable();
+  if(id==='manutencao')renderManTable();
+}
+
+// ══════════════════════════════════════════
+//  UTILITÁRIOS
+// ══════════════════════════════════════════
+function fmt(d){if(!d)return'—';var p=d.split('-');return p[2]+'/'+p[1]+'/'+p[0];}
+function today(){return new Date().toISOString().split('T')[0];}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function showToast(msg,icon){
+  icon=icon||'ti-circle-check';
+  var t=document.getElementById('toast');
+  t.querySelector('i').className='ti '+icon;
+  document.getElementById('toast-msg').textContent=msg;
+  t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},3000);
+}
+function statusBadge(s){
+  var m={almoxarifado:['b-green','<i class="ti ti-building-warehouse" style="font-size:11px"></i>Almoxarifado'],cautelado:['b-blue','<i class="ti ti-clipboard-list" style="font-size:11px"></i>Cautelado'],manutencao:['b-yellow','<i class="ti ti-tool" style="font-size:11px"></i>Manutenção'],inativo:['b-gray','Inativo']};
+  var v=m[s]||['b-gray',s];
+  return '<span class="badge '+v[0]+'">'+v[1]+'</span>';
+}
+function locBadge(eq){
+  if(eq.status==='almoxarifado')return'<span class="loc loc-alm"><i class="ti ti-building-warehouse" style="font-size:12px"></i>Almoxarifado</span>';
+  if(eq.status==='cautelado'){var c=DB.cautelas.find(function(x){return x.eqId===eq.id&&x.status==='ativa';});if(c){var col=DB.colaboradores.find(function(x){return x.id===c.colId;});if(col){var nm=col.nome.split(' ');return'<span class="loc loc-cau"><i class="ti ti-user" style="font-size:12px"></i>'+esc(nm[0]+(nm[1]?' '+nm[1]:''))+'</span>';}}}
+  if(eq.status==='manutencao'){var m=DB.manutencao.find(function(x){return x.eqId===eq.id&&x.status==='em_andamento';});return'<span class="loc loc-man"><i class="ti ti-tool" style="font-size:12px"></i>'+(m&&m.prestador?esc(m.prestador):'Manutenção')+'</span>';}
+  return'<span class="loc loc-ina">Inativo</span>';
+}
+
+// ══════════════════════════════════════════
+//  NAVEGAÇÃO
+// ══════════════════════════════════════════
+function navTo(page,el){
+  if((page==='filiais'||page==='usuarios')&&(!CURRENT_USER||CURRENT_USER.role!=='admin')){
+    showToast('Acesso restrito a administradores.','ti-lock');
+    return;
+  }
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active');});
+  document.getElementById('page-'+page).classList.add('active');
+  var titles={dashboard:'Dashboard',equipamentos:'Equipamentos',colaboradores:'Colaboradores',cautelas:'Cautelas',manutencao:'Manutenção',relatorios:'Relatórios',historico:'Histórico',filiais:'Filiais',usuarios:'Usuários'};
+  document.getElementById('topbar-title').textContent=titles[page]||page;
+  if(el)el.classList.add('active');
+  if(page==='dashboard')renderDash();
+  if(page==='equipamentos')renderEqTable();
+  if(page==='colaboradores')renderColTable();
+  if(page==='cautelas')renderCauTable();
+  if(page==='manutencao')renderManTable();
+  if(page==='historico')populateHistSel();
+  if(page==='relatorios')populateRelCol();
+  if(page==='filiais')renderFiliaisTable();
+  if(page==='usuarios')carregarUsuarios();
+}
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+
+// ══════════════════════════════════════════
+//  EQUIPAMENTOS
+// ══════════════════════════════════════════
+function toggleOrigem(){
+  var o=document.getElementById('eq-origem').value;
+  document.getElementById('sec-proprio').style.display=o==='proprio'?'contents':'none';
+  document.getElementById('sec-terceiro').style.display=o==='terceiro'?'block':'none';
+}
+function openEqModal(id){
+  editingId.eq=id||null;
+  document.getElementById('modal-eq-title').textContent=id?'Editar equipamento':'Novo equipamento';
+  ['eq-nome','eq-serie','eq-tipo','eq-marca','eq-modelo','eq-patrimonio','eq-ano','eq-valor-aq','eq-nf-compra','eq-proprietario','eq-nf','eq-contrato','eq-dt-ini','eq-dt-fim','eq-valor-loc','eq-contato','eq-obs'].forEach(function(x){var el=document.getElementById(x);if(el)el.value='';});
+  document.getElementById('eq-origem').value='proprio';
+  document.getElementById('eq-status').value='almoxarifado';
+  document.getElementById('eq-vinculo').value='locacao';
+  preencherSelectFilial('eq-filial');
+  if(id){var eq=DB.equipamentos.find(function(e){return e.id===id;});if(eq){
+    document.getElementById('eq-nome').value=eq.nome||'';document.getElementById('eq-serie').value=eq.serie||'';
+    document.getElementById('eq-tipo').value=eq.tipo||'';document.getElementById('eq-marca').value=eq.marca||'';
+    document.getElementById('eq-modelo').value=eq.modelo||'';document.getElementById('eq-origem').value=eq.origem;
+    document.getElementById('eq-status').value=eq.status;document.getElementById('eq-obs').value=eq.obs||'';
+    if(eq.filialId)document.getElementById('eq-filial').value=eq.filialId;
+    if(eq.origem==='proprio'){document.getElementById('eq-patrimonio').value=eq.patrimonio||'';document.getElementById('eq-ano').value=eq.ano||'';document.getElementById('eq-valor-aq').value=eq.valorAq||'';document.getElementById('eq-nf-compra').value=eq.nfCompra||'';}
+    else{document.getElementById('eq-proprietario').value=eq.proprietario||'';document.getElementById('eq-vinculo').value=eq.vinculo||'locacao';document.getElementById('eq-nf').value=eq.nf||'';document.getElementById('eq-contrato').value=eq.contrato||'';document.getElementById('eq-dt-ini').value=eq.dtIni||'';document.getElementById('eq-dt-fim').value=eq.dtFim||'';document.getElementById('eq-valor-loc').value=eq.valorLoc||'';document.getElementById('eq-contato').value=eq.contato||'';}
+  }}
+  toggleOrigem();openModal('modal-eq');
+}
+async function salvarEq(){
+  var nome=document.getElementById('eq-nome').value.trim();
+  var serie=document.getElementById('eq-serie').value.trim();
+  var origem=document.getElementById('eq-origem').value;
+  var filialId=document.getElementById('eq-filial').value;
+  if(!nome||!serie){alert('Nome e número de série são obrigatórios.');return;}
+  if(!filialId){alert('Selecione a filial deste equipamento.');return;}
+  if(origem==='proprio'&&!document.getElementById('eq-patrimonio').value.trim()){alert('Nº de plaqueta de patrimônio é obrigatório para equipamento próprio.');return;}
+  if(origem==='terceiro'&&!document.getElementById('eq-proprietario').value.trim()){alert('Proprietário é obrigatório para equipamento de terceiro.');return;}
+  var obj={nome:nome,serie:serie,tipo:document.getElementById('eq-tipo').value.trim(),marca:document.getElementById('eq-marca').value.trim(),modelo:document.getElementById('eq-modelo').value.trim(),origem:origem,status:document.getElementById('eq-status').value,obs:document.getElementById('eq-obs').value.trim(),filialId:filialId};
+  if(origem==='proprio'){obj.patrimonio=document.getElementById('eq-patrimonio').value.trim();obj.ano=document.getElementById('eq-ano').value;obj.valorAq=document.getElementById('eq-valor-aq').value;obj.nfCompra=document.getElementById('eq-nf-compra').value.trim();}
+  else{obj.proprietario=document.getElementById('eq-proprietario').value.trim();obj.vinculo=document.getElementById('eq-vinculo').value;obj.nf=document.getElementById('eq-nf').value.trim();obj.contrato=document.getElementById('eq-contrato').value.trim();obj.dtIni=document.getElementById('eq-dt-ini').value;obj.dtFim=document.getElementById('eq-dt-fim').value;obj.valorLoc=document.getElementById('eq-valor-loc').value;obj.contato=document.getElementById('eq-contato').value.trim();}
+  var row=eqToRow(obj);
+  try{
+    if(editingId.eq){
+      var{data,error}=await sb.from('equipamentos').update(row).eq('id',editingId.eq).select().single();
+      if(error)throw error;
+      var idx=DB.equipamentos.findIndex(function(e){return e.id===editingId.eq;});
+      DB.equipamentos[idx]=rowToEq(data);
+    }else{
+      var insertRow=Object.assign({},row,{criado_por:CURRENT_USER?CURRENT_USER.id:null});
+      var{data,error}=await sb.from('equipamentos').insert(insertRow).select().single();
+      if(error)throw error;
+      DB.equipamentos.push(rowToEq(data));
+    }
+    closeModal('modal-eq');renderEqTable();renderDash();
+    showToast(editingId.eq?'Equipamento atualizado com sucesso.':'Equipamento cadastrado com sucesso.');
+  }catch(err){showDbError(err);}
+}
+async function excluirEq(id){
+  if(DB.cautelas.find(function(c){return c.eqId===id&&c.status==='ativa';})){alert('Não é possível excluir: equipamento possui cautela ativa. Registre a devolução primeiro.');return;}
+  if(!confirm('Excluir este equipamento permanentemente?'))return;
+  try{
+    var{error}=await sb.from('equipamentos').delete().eq('id',id);
+    if(error)throw error;
+    DB.equipamentos=DB.equipamentos.filter(function(e){return e.id!==id;});
+    renderEqTable();renderDash();showToast('Equipamento excluído.','ti-trash');
+  }catch(err){showDbError(err);}
+}
+function renderEqTable(){
+  var search=(document.getElementById('eq-search').value||'').toLowerCase();
+  var fS=document.getElementById('eq-f-status').value;
+  var fO=document.getElementById('eq-f-origem').value;
+  var list=DB.equipamentos.filter(function(e){
+    var ok=!search||(e.nome.toLowerCase().includes(search)||e.serie.toLowerCase().includes(search)||(e.patrimonio&&e.patrimonio.toLowerCase().includes(search)));
+    if(fS)ok=ok&&e.status===fS;if(fO)ok=ok&&e.origem===fO;return ok;
+  });
+  var tb=document.getElementById('eq-tbody');
+  if(!list.length){tb.innerHTML='<tr><td colspan="6"><div class="empty"><i class="ti ti-package"></i><p>Nenhum equipamento encontrado</p><span>Adicione um novo equipamento para começar</span></div></td></tr>';return;}
+  tb.innerHTML=list.map(function(e){
+    var ori=e.origem==='proprio'?'<span class="badge b-green">Próprio</span>':'<span class="badge b-purple">Terceiro</span>';
+    var canCau=e.status==='almoxarifado';
+    var btnCau=canCau?'<button class="btn btn-sm btn-primary" onclick="preCautela('+e.id+')" title="Emitir cautela"><i class="ti ti-clipboard-list"></i></button>':'';
+    return'<tr><td><div class="cell-primary">'+esc(e.nome)+'</div><div class="cell-sub">'+esc(e.tipo||'')+(e.marca?' · '+esc(e.marca):'')+(e.modelo?' · '+esc(e.modelo):'')+'</div></td><td><span class="cell-mono">'+esc(e.serie)+'</span></td><td>'+ori+'</td><td>'+statusBadge(e.status)+'</td><td>'+locBadge(e)+'</td><td><div class="actions">'+btnCau+'<button class="btn btn-sm btn-ghost" onclick="openEqModal('+e.id+')" title="Editar"><i class="ti ti-edit"></i></button><button class="btn btn-sm btn-ghost" onclick="excluirEq('+e.id+')" title="Excluir" style="color:var(--red)"><i class="ti ti-trash"></i></button></div></td></tr>';
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+//  COLABORADORES
+// ══════════════════════════════════════════
+function openColModal(id){
+  editingId.col=id||null;
+  document.getElementById('modal-col-title').textContent=id?'Editar colaborador':'Novo colaborador';
+  ['col-matricula','col-nome','col-encarregado','col-tel','col-cpf','col-cargo'].forEach(function(x){document.getElementById(x).value='';});
+  document.getElementById('col-setor').value='Operação';document.getElementById('col-ativo').value='ativo';
+  preencherSelectFilial('col-filial');
+  if(id){var c=DB.colaboradores.find(function(x){return x.id===id;});if(c){document.getElementById('col-matricula').value=c.matricula;document.getElementById('col-nome').value=c.nome;document.getElementById('col-setor').value=c.setor;document.getElementById('col-encarregado').value=c.encarregado||'';document.getElementById('col-tel').value=c.tel||'';document.getElementById('col-cpf').value=c.cpf||'';document.getElementById('col-cargo').value=c.cargo||'';document.getElementById('col-ativo').value=c.ativo;if(c.filialId)document.getElementById('col-filial').value=c.filialId;}}
+  openModal('modal-col');
+}
+async function salvarCol(){
+  var mat=document.getElementById('col-matricula').value.trim();
+  var nome=document.getElementById('col-nome').value.trim();
+  var filialId=document.getElementById('col-filial').value;
+  if(!mat||!nome){alert('Matrícula e nome são obrigatórios.');return;}
+  if(!filialId){alert('Selecione a filial deste colaborador.');return;}
+  if(!editingId.col&&DB.colaboradores.find(function(c){return c.matricula===mat;})){alert('Matrícula já cadastrada.');return;}
+  var obj={matricula:mat,nome:nome,setor:document.getElementById('col-setor').value,encarregado:document.getElementById('col-encarregado').value.trim(),tel:document.getElementById('col-tel').value.trim(),cpf:document.getElementById('col-cpf').value.trim(),cargo:document.getElementById('col-cargo').value.trim(),ativo:document.getElementById('col-ativo').value,filialId:filialId};
+  var row=colToRow(obj);
+  try{
+    if(editingId.col){
+      var{data,error}=await sb.from('colaboradores').update(row).eq('id',editingId.col).select().single();
+      if(error)throw error;
+      var idx=DB.colaboradores.findIndex(function(c){return c.id===editingId.col;});
+      DB.colaboradores[idx]=rowToCol(data);
+    }else{
+      var insertRow=Object.assign({},row,{criado_por:CURRENT_USER?CURRENT_USER.id:null});
+      var{data,error}=await sb.from('colaboradores').insert(insertRow).select().single();
+      if(error)throw error;
+      DB.colaboradores.push(rowToCol(data));
+    }
+    closeModal('modal-col');renderColTable();showToast('Colaborador salvo com sucesso.');
+  }catch(err){
+    if(err.code==='23505')alert('Matrícula já cadastrada.');else showDbError(err);
+  }
+}
+async function excluirCol(id){
+  if(DB.cautelas.find(function(c){return c.colId===id&&c.status==='ativa';})){alert('Colaborador possui cautela ativa. Registre a devolução antes de excluir.');return;}
+  if(!confirm('Excluir colaborador?'))return;
+  try{
+    var{error}=await sb.from('colaboradores').delete().eq('id',id);
+    if(error)throw error;
+    DB.colaboradores=DB.colaboradores.filter(function(c){return c.id!==id;});
+    renderColTable();showToast('Colaborador excluído.','ti-trash');
+  }catch(err){showDbError(err);}
+}
+function renderColTable(){
+  var search=(document.getElementById('col-search').value||'').toLowerCase();
+  var fSe=document.getElementById('col-f-setor').value;
+  var fAt=document.getElementById('col-f-ativo').value;
+  var list=DB.colaboradores.filter(function(c){
+    var ok=!search||(c.nome.toLowerCase().includes(search)||c.matricula.includes(search));
+    if(fSe)ok=ok&&c.setor===fSe;if(fAt)ok=ok&&c.ativo===fAt;return ok;
+  });
+  var tb=document.getElementById('col-tbody');
+  if(!list.length){tb.innerHTML='<tr><td colspan="7"><div class="empty"><i class="ti ti-users"></i><p>Nenhum colaborador encontrado</p></div></td></tr>';return;}
+  tb.innerHTML=list.map(function(c){
+    var cauAti=DB.cautelas.filter(function(x){return x.colId===c.id&&x.status==='ativa';}).length;
+    var stb=c.ativo==='ativo'?'<span class="badge b-green"><i class="ti ti-circle-filled" style="font-size:8px"></i>Ativo</span>':'<span class="badge b-gray">Inativo</span>';
+    return'<tr><td><span class="cell-mono">'+esc(c.matricula)+'</span></td><td><div class="cell-primary">'+esc(c.nome)+'</div></td><td><div class="cell-sub" style="font-size:12px">'+esc(c.cargo||'')+(c.cargo&&c.setor?' · ':'')+esc(c.setor)+'</div></td><td style="font-size:12px;color:var(--slate)">'+esc(c.encarregado||'—')+'</td><td>'+stb+'</td><td>'+(cauAti?'<span class="badge b-blue">'+cauAti+' ativa'+(cauAti>1?'s':'')+'</span>':'<span style="color:var(--slate-light);font-size:12px">—</span>')+'</td><td><div class="actions"><button class="btn btn-sm btn-ghost" onclick="openColModal('+c.id+')" title="Editar"><i class="ti ti-edit"></i></button><button class="btn btn-sm btn-ghost" onclick="excluirCol('+c.id+')" title="Excluir" style="color:var(--red)"><i class="ti ti-trash"></i></button></div></td></tr>';
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+//  CAUTELAS
+// ══════════════════════════════════════════
+function preCautela(eqId){navTo('cautelas',document.querySelector('[onclick*="cautelas"]'));setTimeout(function(){openCauModal(eqId);},80);}
+function openCauModal(preEqId){
+  var disp=DB.equipamentos.filter(function(e){return e.status==='almoxarifado';});
+  var ativos=DB.colaboradores.filter(function(c){return c.ativo==='ativo';});
+  document.getElementById('cau-eq').innerHTML=disp.length?disp.map(function(e){return'<option value="'+e.id+'">'+esc(e.nome)+' ('+esc(e.serie)+')'+'</option>';}).join(''):'<option value="">Nenhum equipamento disponível</option>';
+  document.getElementById('cau-col').innerHTML=ativos.length?ativos.map(function(c){return'<option value="'+c.id+'">'+esc(c.matricula)+' — '+esc(c.nome)+'</option>';}).join(''):'<option value="">Nenhum colaborador ativo</option>';
+  if(preEqId)document.getElementById('cau-eq').value=preEqId;
+  document.getElementById('cau-saida').value=today();
+  document.getElementById('cau-prev').value='';document.getElementById('cau-obs').value='';document.getElementById('cau-cond').value='bom';
+  openModal('modal-cau');
+}
+async function salvarCau(){
+  var eqId=parseInt(document.getElementById('cau-eq').value);
+  var colId=parseInt(document.getElementById('cau-col').value);
+  var saida=document.getElementById('cau-saida').value;
+  if(!eqId||!colId||!saida){alert('Equipamento, colaborador e data são obrigatórios.');return;}
+  var cauObj={eqId:eqId,colId:colId,saida:saida,prev:document.getElementById('cau-prev').value,condSaida:document.getElementById('cau-cond').value,obs:document.getElementById('cau-obs').value,status:'ativa',dataDev:null,condDev:null,obsDev:null,registradoPor:CURRENT_USER?CURRENT_USER.id:null};
+  try{
+    var{data:cauData,error:cauErr}=await sb.from('cautelas').insert(cauToRow(cauObj)).select().single();
+    if(cauErr)throw cauErr;
+    var{data:eqData,error:eqErr}=await sb.from('equipamentos').update({status:'cautelado'}).eq('id',eqId).select().single();
+    if(eqErr)throw eqErr;
+    DB.cautelas.push(rowToCau(cauData));
+    var idx=DB.equipamentos.findIndex(function(e){return e.id===eqId;});
+    if(idx>-1)DB.equipamentos[idx]=rowToEq(eqData);
+    closeModal('modal-cau');renderCauTable();renderDash();showToast('Cautela registrada com sucesso.');
+  }catch(err){showDbError(err);}
+}
+function abrirDev(cauId){
+  devCauId=cauId;
+  document.getElementById('dev-data').value=today();document.getElementById('dev-cond').value='bom';document.getElementById('dev-obs').value='';
+  openModal('modal-dev');
+}
+async function confirmarDev(){
+  var cau=DB.cautelas.find(function(c){return c.id===devCauId;});if(!cau)return;
+  var data=document.getElementById('dev-data').value;
+  if(!data){alert('Informe a data de devolução.');return;}
+  var condDev=document.getElementById('dev-cond').value;
+  var obsDev=document.getElementById('dev-obs').value;
+  try{
+    var{data:cauData,error:cauErr}=await sb.from('cautelas').update({status:'devolvida',data_dev:data,cond_dev:condDev,obs_dev:obsDev,devolvido_por:CURRENT_USER?CURRENT_USER.id:null}).eq('id',devCauId).select().single();
+    if(cauErr)throw cauErr;
+    var idx=DB.cautelas.findIndex(function(c){return c.id===devCauId;});
+    DB.cautelas[idx]=rowToCau(cauData);
+
+    if(condDev==='manut'){
+      var{data:eqData,error:eqErr}=await sb.from('equipamentos').update({status:'manutencao'}).eq('id',cau.eqId).select().single();
+      if(eqErr)throw eqErr;
+      var eqIdx=DB.equipamentos.findIndex(function(e){return e.id===cau.eqId;});
+      if(eqIdx>-1)DB.equipamentos[eqIdx]=rowToEq(eqData);
+
+      var manRow=manToRow({eqId:cau.eqId,defeito:'Avaria registrada na devolução da cautela #'+cau.id+(obsDev?': '+obsDev:''),prestador:'',os:'',entrada:data,prev:'',tipo:'corretiva',valor:0,valorFinal:0,obs:'OS gerada automaticamente na devolução.',status:'em_andamento'});
+      var{data:manData,error:manErr}=await sb.from('manutencao').insert(manRow).select().single();
+      if(manErr)throw manErr;
+      DB.manutencao.push(rowToMan(manData));
+    }else{
+      var{data:eqData2,error:eqErr2}=await sb.from('equipamentos').update({status:'almoxarifado'}).eq('id',cau.eqId).select().single();
+      if(eqErr2)throw eqErr2;
+      var eqIdx2=DB.equipamentos.findIndex(function(e){return e.id===cau.eqId;});
+      if(eqIdx2>-1)DB.equipamentos[eqIdx2]=rowToEq(eqData2);
+    }
+    closeModal('modal-dev');renderCauTable();renderDash();showToast('Devolução registrada. Equipamento retornou ao almoxarifado.','ti-corner-down-left');
+  }catch(err){showDbError(err);}
+}
+function renderCauTable(){
+  var search=(document.getElementById('cau-search').value||'').toLowerCase();
+  var fS=document.getElementById('cau-f-status').value;
+  var list=DB.cautelas.filter(function(c){
+    var eq=DB.equipamentos.find(function(e){return e.id===c.eqId;});
+    var col=DB.colaboradores.find(function(x){return x.id===c.colId;});
+    var ok=!search||((eq&&eq.nome.toLowerCase().includes(search))||(col&&col.nome.toLowerCase().includes(search)));
+    if(fS)ok=ok&&c.status===fS;return ok;
+  }).sort(function(a,b){return b.id-a.id;});
+  var tb=document.getElementById('cau-tbody');
+  if(!list.length){tb.innerHTML='<tr><td colspan="8"><div class="empty"><i class="ti ti-clipboard-list"></i><p>Nenhuma cautela encontrada</p></div></td></tr>';return;}
+  tb.innerHTML=list.map(function(c){
+    var eq=DB.equipamentos.find(function(e){return e.id===c.eqId;})||{nome:'?'};
+    var col=DB.colaboradores.find(function(x){return x.id===c.colId;})||{nome:'?',setor:''};
+    var stb=c.status==='ativa'?'<span class="badge b-blue"><i class="ti ti-circle-filled" style="font-size:8px"></i>Ativa</span>':'<span class="badge b-gray">Devolvida</span>';
+    var act=c.status==='ativa'?'<button class="btn btn-sm btn-success" onclick="abrirDev('+c.id+')"><i class="ti ti-corner-down-left"></i>Devolver</button>':'';
+    return'<tr><td><div class="cell-primary">'+esc(eq.nome)+'</div></td><td>'+esc(col.nome)+'</td><td><span class="badge b-gray" style="font-size:10px">'+esc(col.setor)+'</span></td><td>'+fmt(c.saida)+'</td><td style="color:var(--slate-light)">'+(c.prev?fmt(c.prev):'—')+'</td><td>'+(c.dataDev?fmt(c.dataDev):'—')+'</td><td>'+stb+'</td><td>'+act+'</td></tr>';
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+//  MANUTENÇÃO
+// ══════════════════════════════════════════
+function openManModal(id){
+  editingId.man=id||null;
+  document.getElementById('modal-man-title').textContent=id?'Editar OS — Manutenção':'Abertura de OS — Manutenção';
+  var eqSel=document.getElementById('man-eq');
+  eqSel.innerHTML=DB.equipamentos.filter(function(e){return e.status!=='inativo';}).map(function(e){return'<option value="'+e.id+'">'+esc(e.nome)+' ('+esc(e.serie)+')'+'</option>';}).join('');
+  ['man-defeito','man-prestador','man-tel-prest','man-os','man-obs'].forEach(function(x){document.getElementById(x).value='';});
+  document.getElementById('man-entrada').value=today();document.getElementById('man-prev').value='';
+  document.getElementById('man-tipo').value='corretiva';document.getElementById('man-valor').value='';document.getElementById('man-valor-final').value='';
+  if(id){var m=DB.manutencao.find(function(x){return x.id===id;});if(m){eqSel.value=m.eqId;document.getElementById('man-defeito').value=m.defeito;document.getElementById('man-prestador').value=m.prestador;document.getElementById('man-tel-prest').value=m.telPrest||'';document.getElementById('man-os').value=m.os;document.getElementById('man-entrada').value=m.entrada;document.getElementById('man-prev').value=m.prev||'';document.getElementById('man-tipo').value=m.tipo;document.getElementById('man-valor').value=m.valor||'';document.getElementById('man-valor-final').value=m.valorFinal||'';document.getElementById('man-obs').value=m.obs||'';}}
+  openModal('modal-man');
+}
+async function salvarMan(){
+  var eqId=parseInt(document.getElementById('man-eq').value);
+  var defeito=document.getElementById('man-defeito').value.trim();
+  var entrada=document.getElementById('man-entrada').value;
+  if(!eqId||!defeito||!entrada){alert('Equipamento, defeito e data de entrada são obrigatórios.');return;}
+  var obj={eqId:eqId,defeito:defeito,prestador:document.getElementById('man-prestador').value.trim(),telPrest:document.getElementById('man-tel-prest').value.trim(),os:document.getElementById('man-os').value.trim(),entrada:entrada,prev:document.getElementById('man-prev').value,tipo:document.getElementById('man-tipo').value,valor:parseFloat(document.getElementById('man-valor').value)||0,valorFinal:parseFloat(document.getElementById('man-valor-final').value)||0,obs:document.getElementById('man-obs').value.trim(),status:'em_andamento',registradoPor:CURRENT_USER?CURRENT_USER.id:null};
+  var row=manToRow(obj);
+  try{
+    if(editingId.man){
+      var{data,error}=await sb.from('manutencao').update(row).eq('id',editingId.man).select().single();
+      if(error)throw error;
+      var idx=DB.manutencao.findIndex(function(x){return x.id===editingId.man;});
+      DB.manutencao[idx]=rowToMan(data);
+    }else{
+      var{data,error}=await sb.from('manutencao').insert(row).select().single();
+      if(error)throw error;
+      DB.manutencao.push(rowToMan(data));
+      var eq=DB.equipamentos.find(function(e){return e.id===eqId;});
+      if(eq&&eq.status==='almoxarifado'){
+        var{data:eqData,error:eqErr}=await sb.from('equipamentos').update({status:'manutencao'}).eq('id',eqId).select().single();
+        if(eqErr)throw eqErr;
+        var eqIdx=DB.equipamentos.findIndex(function(e){return e.id===eqId;});
+        DB.equipamentos[eqIdx]=rowToEq(eqData);
+      }
+    }
+    closeModal('modal-man');renderManTable();renderDash();showToast('OS de manutenção registrada.');
+  }catch(err){showDbError(err);}
+}
+async function concluirMan(id){
+  if(!confirm('Marcar como concluída e retornar o equipamento ao almoxarifado?'))return;
+  var m=DB.manutencao.find(function(x){return x.id===id;});if(!m)return;
+  try{
+    var{data:manData,error:manErr}=await sb.from('manutencao').update({status:'concluida',dt_conclusao:today(),concluido_por:CURRENT_USER?CURRENT_USER.id:null}).eq('id',id).select().single();
+    if(manErr)throw manErr;
+    var idx=DB.manutencao.findIndex(function(x){return x.id===id;});
+    DB.manutencao[idx]=rowToMan(manData);
+
+    var{data:eqData,error:eqErr}=await sb.from('equipamentos').update({status:'almoxarifado'}).eq('id',m.eqId).select().single();
+    if(eqErr)throw eqErr;
+    var eqIdx=DB.equipamentos.findIndex(function(e){return e.id===m.eqId;});
+    if(eqIdx>-1)DB.equipamentos[eqIdx]=rowToEq(eqData);
+
+    renderManTable();renderDash();showToast('OS concluída. Equipamento retornou ao almoxarifado.','ti-check');
+  }catch(err){showDbError(err);}
+}
+function renderManTable(){
+  var search=(document.getElementById('man-search').value||'').toLowerCase();
+  var fS=document.getElementById('man-f-status').value;
+  var fT=document.getElementById('man-f-tipo').value;
+  var list=DB.manutencao.filter(function(m){
+    var eq=DB.equipamentos.find(function(e){return e.id===m.eqId;});
+    var ok=!search||((eq&&eq.nome.toLowerCase().includes(search))||m.os.toLowerCase().includes(search));
+    if(fS)ok=ok&&m.status===fS;if(fT)ok=ok&&m.tipo===fT;return ok;
+  }).sort(function(a,b){return b.id-a.id;});
+  var tb=document.getElementById('man-tbody');
+  if(!list.length){tb.innerHTML='<tr><td colspan="9"><div class="empty"><i class="ti ti-tool"></i><p>Nenhuma OS registrada</p><span>Abra uma OS para começar</span></div></td></tr>';return;}
+  tb.innerHTML=list.map(function(m){
+    var eq=DB.equipamentos.find(function(e){return e.id===m.eqId;})||{nome:'?'};
+    var stb=m.status==='em_andamento'?'<span class="badge b-yellow"><i class="ti ti-tool" style="font-size:10px"></i>Andamento</span>':'<span class="badge b-green"><i class="ti ti-check" style="font-size:10px"></i>Concluída</span>';
+    var tipb=m.tipo==='preventiva'?'<span class="badge b-green" style="font-size:10px">Preventiva</span>':'<span class="badge b-orange" style="font-size:10px">Corretiva</span>';
+    var act=m.status==='em_andamento'?'<button class="btn btn-sm btn-success" onclick="concluirMan('+m.id+')" title="Concluir OS"><i class="ti ti-check"></i></button>':'';
+    var val=m.valorFinal?'R$ '+m.valorFinal.toFixed(2):(m.valor?'~R$ '+m.valor.toFixed(2):'—');
+    return'<tr><td><div class="cell-primary">'+esc(eq.nome)+'</div>'+(m.os?'<div class="cell-sub">'+esc(m.os)+'</div>':'')+'</td><td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px" title="'+esc(m.defeito)+'">'+esc(m.defeito)+'</td><td style="font-size:12px">'+(m.prestador?esc(m.prestador):'—')+'</td><td>'+tipb+'</td><td>'+fmt(m.entrada)+'</td><td style="color:var(--slate-light)">'+(m.prev?fmt(m.prev):'—')+'</td><td style="font-size:12px;font-weight:500">'+val+'</td><td>'+stb+'</td><td><div class="actions"><button class="btn btn-sm btn-ghost" onclick="openManModal('+m.id+')" title="Editar"><i class="ti ti-edit"></i></button>'+act+'</div></td></tr>';
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+//  DASHBOARD
+// ══════════════════════════════════════════
+function renderDash(){
+  var total=DB.equipamentos.length;
+  var cauAti=DB.equipamentos.filter(function(e){return e.status==='cautelado';}).length;
+  var almo=DB.equipamentos.filter(function(e){return e.status==='almoxarifado';}).length;
+  var manut=DB.equipamentos.filter(function(e){return e.status==='manutencao';}).length;
+  document.getElementById('dash-stats').innerHTML=[
+    ['ti-package','Total cadastrado',total,'equipamentos e ferramentas','c-blue'],
+    ['ti-clipboard-list','Cautelados',cauAti,'em uso por colaboradores','c-orange'],
+    ['ti-building-warehouse','No almoxarifado',almo,'disponíveis para cautela','c-green'],
+    ['ti-tool','Em manutenção',manut,'aguardando serviço','c-yellow']
+  ].map(function(s){return'<div class="stat-card '+s[4]+'"><div class="stat-icon"><i class="ti '+s[0]+'"></i></div><div class="stat-label">'+s[1]+'</div><div class="stat-value">'+s[2]+'</div><div class="stat-sub">'+s[3]+'</div></div>';}).join('');
+  var recCau=DB.cautelas.filter(function(c){return c.status==='ativa';}).slice(-6).reverse();
+  var tb=document.getElementById('dash-cau-table').querySelector('tbody');
+  tb.innerHTML=recCau.length?recCau.map(function(c){var eq=DB.equipamentos.find(function(e){return e.id===c.eqId;})||{nome:'?'};var col=DB.colaboradores.find(function(x){return x.id===c.colId;})||{nome:'?'};return'<tr><td><div class="cell-primary" style="font-size:12px">'+esc(eq.nome)+'</div></td><td style="font-size:12px">'+esc(col.nome)+'</td><td style="font-size:12px">'+fmt(c.saida)+'</td><td>'+locBadge(eq)+'</td></tr>';}).join(''):'<tr><td colspan="4"><div class="empty" style="padding:24px"><i class="ti ti-clipboard" style="font-size:30px"></i><p>Nenhuma cautela ativa</p></div></td></tr>';
+  document.getElementById('dash-loc-list').innerHTML=DB.equipamentos.length?DB.equipamentos.map(function(e){return'<div class="loc-list-item"><span class="loc-name">'+esc(e.nome)+'</span>'+locBadge(e)+'</div>';}).join(''):'<div class="empty" style="padding:20px"><i class="ti ti-map-pin" style="font-size:28px"></i><p>Nenhum equipamento</p></div>';
+}
+
+// ══════════════════════════════════════════
+//  RELATÓRIOS
+// ══════════════════════════════════════════
+function populateRelCol(){var sel=document.getElementById('rel-col-sel');sel.innerHTML='<option value="">Todos os colaboradores</option>'+DB.colaboradores.map(function(c){return'<option value="'+c.id+'">'+esc(c.matricula)+' — '+esc(c.nome)+'</option>';}).join('');}
+function switchTab(tabId,el){document.querySelectorAll('.rel-tab').forEach(function(t){t.style.display='none';});document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});document.getElementById(tabId).style.display='';el.classList.add('active');}
+function tableRel(headers,rows,total){
+  var summary=total?'<div style="margin-bottom:10px;font-size:13px;color:var(--slate);font-weight:500">'+total+'</div>':'';
+  if(!rows.length)return summary+'<div class="empty" style="padding:36px"><i class="ti ti-table-off"></i><p>Nenhum resultado encontrado</p></div>';
+  return summary+'<div class="card card-table"><div class="table-wrap"><table><thead><tr>'+headers.map(function(h){return'<th>'+h+'</th>';}).join('')+'</tr></thead><tbody>'+rows.join('')+'</tbody></table></div></div>';
+}
+function gerarRelGeral(){
+  var de=document.getElementById('rel-de').value;var ate=document.getElementById('rel-ate').value;var fSt=document.getElementById('rel-status-cau').value;
+  var list=DB.cautelas.filter(function(c){var ok=true;if(de&&c.saida<de)ok=false;if(ate&&c.saida>ate)ok=false;if(fSt&&c.status!==fSt)ok=false;return ok;});
+  var rows=list.map(function(c){var eq=DB.equipamentos.find(function(e){return e.id===c.eqId;})||{nome:'?'};var col=DB.colaboradores.find(function(x){return x.id===c.colId;})||{nome:'?'};var stb=c.status==='ativa'?'<span class="badge b-blue">Ativa</span>':'<span class="badge b-gray">Devolvida</span>';return'<tr><td class="cell-primary">'+esc(eq.nome)+'</td><td>'+esc(col.nome)+'</td><td>'+esc(col.setor)+'</td><td>'+fmt(c.saida)+'</td><td>'+(c.prev?fmt(c.prev):'—')+'</td><td>'+(c.dataDev?fmt(c.dataDev):'—')+'</td><td>'+stb+'</td></tr>';});
+  document.getElementById('rel-geral-result').innerHTML=tableRel(['Equipamento','Colaborador','Setor','Saída','Prev. Dev.','Devolução','Status'],rows,list.length+' registro(s) encontrado(s)');
+}
+function gerarRelSetor(){
+  var setor=document.getElementById('rel-setor-sel').value;
+  var colIds=DB.colaboradores.filter(function(c){return!setor||c.setor===setor;}).map(function(c){return c.id;});
+  var list=DB.cautelas.filter(function(c){return colIds.includes(c.colId);});
+  var rows=list.map(function(c){var eq=DB.equipamentos.find(function(e){return e.id===c.eqId;})||{nome:'?'};var col=DB.colaboradores.find(function(x){return x.id===c.colId;})||{nome:'?',setor:''};var stb=c.status==='ativa'?'<span class="badge b-blue">Ativa</span>':'<span class="badge b-gray">Devolvida</span>';return'<tr><td class="cell-primary">'+esc(eq.nome)+'</td><td>'+esc(col.nome)+'</td><td>'+esc(col.setor)+'</td><td>'+esc(col.encarregado||'—')+'</td><td>'+fmt(c.saida)+'</td><td>'+(c.dataDev?fmt(c.dataDev):'—')+'</td><td>'+stb+'</td></tr>';});
+  document.getElementById('rel-setor-result').innerHTML=tableRel(['Equipamento','Colaborador','Setor','Encarregado','Saída','Devolução','Status'],rows,list.length+' registro(s) — Setor: '+(setor||'Todos'));
+}
+function gerarRelCol(){
+  var colId=parseInt(document.getElementById('rel-col-sel').value)||null;
+  var list=DB.cautelas.filter(function(c){return!colId||c.colId===colId;});
+  var rows=list.map(function(c){var eq=DB.equipamentos.find(function(e){return e.id===c.eqId;})||{nome:'?'};var col=DB.colaboradores.find(function(x){return x.id===c.colId;})||{nome:'?'};var stb=c.status==='ativa'?'<span class="badge b-blue">Ativa</span>':'<span class="badge b-gray">Devolvida</span>';return'<tr><td><span class="cell-mono">'+esc(col.matricula)+'</span></td><td class="cell-primary">'+esc(col.nome)+'</td><td>'+esc(eq.nome)+'</td><td>'+fmt(c.saida)+'</td><td>'+(c.dataDev?fmt(c.dataDev):'—')+'</td><td>'+stb+'</td></tr>';});
+  document.getElementById('rel-col-result').innerHTML=tableRel(['Matrícula','Colaborador','Equipamento','Saída','Devolução','Status'],rows,list.length+' registro(s)');
+}
+function gerarRelManut(){
+  var fS=document.getElementById('rel-man-status').value;var fT=document.getElementById('rel-man-tipo').value;
+  var list=DB.manutencao.filter(function(m){var ok=true;if(fS)ok=ok&&m.status===fS;if(fT)ok=ok&&m.tipo===fT;return ok;});
+  var totalVal=list.reduce(function(s,m){return s+(m.valorFinal||m.valor||0);},0);
+  var rows=list.map(function(m){var eq=DB.equipamentos.find(function(e){return e.id===m.eqId;})||{nome:'?'};var stb=m.status==='em_andamento'?'<span class="badge b-yellow">Andamento</span>':'<span class="badge b-green">Concluída</span>';var tipb=m.tipo==='preventiva'?'<span class="badge b-green" style="font-size:10px">Preventiva</span>':'<span class="badge b-orange" style="font-size:10px">Corretiva</span>';return'<tr><td class="cell-primary">'+esc(eq.nome)+'</td><td style="font-size:12px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(m.defeito)+'</td><td>'+tipb+'</td><td style="font-size:12px">'+(m.prestador?esc(m.prestador):'—')+'</td><td>'+fmt(m.entrada)+'</td><td>'+(m.dtConclusao?fmt(m.dtConclusao):'—')+'</td><td style="font-weight:500">'+(m.valorFinal?'R$ '+m.valorFinal.toFixed(2):(m.valor?'~R$ '+m.valor.toFixed(2):'—'))+'</td><td>'+stb+'</td></tr>';});
+  document.getElementById('rel-manut-result').innerHTML=tableRel(['Equipamento','Defeito/Serviço','Tipo','Prestador','Entrada','Conclusão','Custo','Status'],rows,list.length+' OS(s) | Custo total: R$ '+totalVal.toFixed(2));
+}
+
+// ══════════════════════════════════════════
+//  HISTÓRICO
+// ══════════════════════════════════════════
+function populateHistSel(){
+  document.getElementById('hist-eq-sel').innerHTML='<option value="">Selecione um equipamento...</option>'+DB.equipamentos.map(function(e){return'<option value="'+e.id+'">'+esc(e.nome)+' ('+esc(e.serie)+')'+'</option>';}).join('');
+  document.getElementById('hist-result').innerHTML='';
+}
+function renderHistorico(){
+  var eqId=parseInt(document.getElementById('hist-eq-sel').value)||null;
+  var res=document.getElementById('hist-result');
+  if(!eqId){res.innerHTML='<div class="empty" style="padding:50px"><i class="ti ti-history"></i><p>Selecione um equipamento acima</p><span>O histórico completo de cautelas e manutenções será exibido aqui</span></div>';return;}
+  var eq=DB.equipamentos.find(function(e){return e.id===eqId;});
+  var cautEq=DB.cautelas.filter(function(c){return c.eqId===eqId;}).sort(function(a,b){return b.id-a.id;});
+  var mantEq=DB.manutencao.filter(function(m){return m.eqId===eqId;}).sort(function(a,b){return b.id-a.id;});
+  var html='<div class="card card-body" style="padding:20px 24px;margin-bottom:16px">';
+  html+='<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border)">';
+  html+='<div><div style="font-size:17px;font-weight:700;color:var(--text);margin-bottom:4px">'+esc(eq.nome)+'</div>';
+  html+='<span class="cell-mono" style="font-size:12px">'+esc(eq.serie)+'</span></div>';
+  html+=statusBadge(eq.status)+'</div>';
+  html+='<div class="detail-grid">';
+  html+='<div><div class="dl">Tipo</div><div class="dv">'+esc(eq.tipo||'—')+(eq.marca?' · '+esc(eq.marca):'')+'</div></div>';
+  if(eq.origem==='proprio'){html+='<div><div class="dl">Patrimônio</div><div class="dv">'+esc(eq.patrimonio||'—')+'</div></div><div><div class="dl">Ano aquisição</div><div class="dv">'+(eq.ano||'—')+'</div></div>';}
+  else{html+='<div><div class="dl">Proprietário</div><div class="dv">'+esc(eq.proprietario||'—')+'</div></div><div><div class="dl">Contrato</div><div class="dv">'+esc(eq.contrato||'—')+(eq.dtFim?' (vto: '+fmt(eq.dtFim)+')':'')+'</div></div>';}
+  html+='<div><div class="dl">Localização atual</div><div class="dv">'+locBadge(eq)+'</div></div>';
+  html+='</div></div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">';
+  // Cautelas
+  html+='<div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:6px"><i class="ti ti-clipboard-list" style="color:var(--blue)"></i>Cautelas ('+cautEq.length+')</div>';
+  if(cautEq.length){
+    html+='<div class="hist-timeline">';
+    html+=cautEq.map(function(c){
+      var col=DB.colaboradores.find(function(x){return x.id===c.colId;})||{nome:'Desconhecido',setor:''};
+      var stb=c.status==='ativa'?'<span class="badge b-blue" style="font-size:10px">Ativa</span>':'<span class="badge b-gray" style="font-size:10px">Devolvida</span>';
+      return'<div class="hist-item"><div class="hist-dot"></div><div class="hist-card"><div class="hist-title">'+esc(col.nome)+stb+'</div><div class="hist-meta"><strong>Setor:</strong> '+esc(col.setor)+'<br><strong>Saída:</strong> '+fmt(c.saida)+(c.dataDev?'<br><strong>Devolução:</strong> '+fmt(c.dataDev)+' · Cond.: '+esc(c.condDev):'<br><span style="color:var(--orange);font-weight:600">Em aberto</span>')+(c.obs?'<br><strong>Obs:</strong> '+esc(c.obs):'')+'</div></div></div>';
+    }).join('');
+    html+='</div>';
+  } else html+='<div class="empty" style="padding:20px 0;text-align:left"><i class="ti ti-clipboard" style="font-size:24px"></i><p style="font-size:12px;margin-top:6px">Nenhuma cautela registrada</p></div>';
+  html+='</div>';
+  // Manutenções
+  html+='<div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:6px"><i class="ti ti-tool" style="color:var(--orange)"></i>Manutenções ('+mantEq.length+')</div>';
+  if(mantEq.length){
+    html+='<div class="hist-timeline">';
+    html+=mantEq.map(function(m){
+      var stb=m.status==='em_andamento'?'<span class="badge b-yellow" style="font-size:10px">Andamento</span>':'<span class="badge b-green" style="font-size:10px">Concluída</span>';
+      return'<div class="hist-item"><div class="hist-dot orange"></div><div class="hist-card"><div class="hist-title">'+esc(m.defeito.substring(0,50)+(m.defeito.length>50?'...':''))+stb+'</div><div class="hist-meta">'+(m.prestador?'<strong>Prestador:</strong> '+esc(m.prestador)+'<br>':'')+' <strong>Entrada:</strong> '+fmt(m.entrada)+(m.dtConclusao?'<br><strong>Conclusão:</strong> '+fmt(m.dtConclusao):'')+(m.valorFinal?'<br><strong>Custo:</strong> R$ '+m.valorFinal.toFixed(2):(m.valor?'<br><strong>Estimado:</strong> R$ '+m.valor.toFixed(2):''))+(m.os?'<br><strong>OS:</strong> '+esc(m.os):'')+'</div></div></div>';
+    }).join('');
+    html+='</div>';
+  } else html+='<div class="empty" style="padding:20px 0;text-align:left"><i class="ti ti-tool" style="font-size:24px"></i><p style="font-size:12px;margin-top:6px">Nenhuma manutenção registrada</p></div>';
+  html+='</div></div>';
+  res.innerHTML=html;
+}
+
+// ══════════════════════════════════════════
+//  FILIAIS (admin)
+// ══════════════════════════════════════════
+function openFilModal(id){
+  editingId.fil=id||null;
+  document.getElementById('modal-fil-title').textContent=id?'Editar filial':'Nova filial';
+  document.getElementById('fil-nome').value='';document.getElementById('fil-cidade').value='';
+  document.getElementById('fil-uf').value='';document.getElementById('fil-ativa').value='true';
+  if(id){var f=FILIAIS.find(function(x){return x.id===id;});if(f){
+    document.getElementById('fil-nome').value=f.nome||'';
+    document.getElementById('fil-cidade').value=f.cidade||'';
+    document.getElementById('fil-uf').value=f.uf||'';
+    document.getElementById('fil-ativa').value=String(f.ativa);
+  }}
+  openModal('modal-fil');
+}
+async function salvarFil(){
+  var nome=document.getElementById('fil-nome').value.trim();
+  if(!nome){alert('Nome da filial é obrigatório.');return;}
+  var row={nome:nome,cidade:document.getElementById('fil-cidade').value.trim()||null,uf:document.getElementById('fil-uf').value.trim().toUpperCase()||null,ativa:document.getElementById('fil-ativa').value==='true'};
+  try{
+    if(editingId.fil){
+      var{data,error}=await sb.from('filiais').update(row).eq('id',editingId.fil).select().single();
+      if(error)throw error;
+      var idx=FILIAIS.findIndex(function(f){return f.id===editingId.fil;});
+      FILIAIS[idx]=data;
+    }else{
+      var{data,error}=await sb.from('filiais').insert(row).select().single();
+      if(error)throw error;
+      FILIAIS.push(data);
+    }
+    closeModal('modal-fil');renderFiliaisTable();showToast('Filial salva com sucesso.');
+  }catch(err){
+    if(err.code==='23505')alert('Já existe uma filial com esse nome.');else showDbError(err);
+  }
+}
+async function excluirFil(id){
+  var temEquip=DB.equipamentos.some(function(e){return e.filialId===id;});
+  var temCol=DB.colaboradores.some(function(c){return c.filialId===id;});
+  if(temEquip||temCol){alert('Não é possível excluir: existem equipamentos ou colaboradores vinculados a esta filial.');return;}
+  if(!confirm('Excluir esta filial permanentemente?'))return;
+  try{
+    var{error}=await sb.from('filiais').delete().eq('id',id);
+    if(error)throw error;
+    FILIAIS=FILIAIS.filter(function(f){return f.id!==id;});
+    renderFiliaisTable();showToast('Filial excluída.','ti-trash');
+  }catch(err){showDbError(err);}
+}
+function renderFiliaisTable(){
+  var search=(document.getElementById('fil-search').value||'').toLowerCase();
+  var list=FILIAIS.filter(function(f){return!search||f.nome.toLowerCase().includes(search);});
+  var tb=document.getElementById('fil-tbody');
+  if(!list.length){tb.innerHTML='<tr><td colspan="6"><div class="empty"><i class="ti ti-building-factory-2"></i><p>Nenhuma filial cadastrada</p><span>Crie a primeira filial para começar a vincular equipamentos</span></div></td></tr>';return;}
+  tb.innerHTML=list.map(function(f){
+    var nEq=DB.equipamentos.filter(function(e){return e.filialId===f.id;}).length;
+    var nCol=DB.colaboradores.filter(function(c){return c.filialId===f.id;}).length;
+    var stb=f.ativa?'<span class="badge b-green">Ativa</span>':'<span class="badge b-gray">Inativa</span>';
+    return'<tr><td><div class="cell-primary">'+esc(f.nome)+'</div></td><td>'+(f.cidade?esc(f.cidade)+(f.uf?'/'+esc(f.uf):''):'—')+'</td><td><span class="badge b-blue">'+nEq+'</span></td><td><span class="badge b-blue">'+nCol+'</span></td><td>'+stb+'</td><td><div class="actions"><button class="btn btn-sm btn-ghost" onclick="openFilModal('+f.id+')" title="Editar"><i class="ti ti-edit"></i></button><button class="btn btn-sm btn-ghost" onclick="excluirFil('+f.id+')" title="Excluir" style="color:var(--red)"><i class="ti ti-trash"></i></button></div></td></tr>';
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+//  USUÁRIOS / ALMOXARIFES (admin)
+// ══════════════════════════════════════════
+var USUARIOS=[];
+var EDGE_FN_URL=SUPABASE_URL+'/functions/v1';
+
+async function chamarEdgeFunction(nome,payload){
+  var{data:sessionData}=await sb.auth.getSession();
+  var token=sessionData&&sessionData.session?sessionData.session.access_token:null;
+  if(!token)throw new Error('Sessão expirada. Faça login novamente.');
+  var resp=await fetch(EDGE_FN_URL+'/'+nome,{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+    body:JSON.stringify(payload)
+  });
+  var json=await resp.json();
+  if(!resp.ok)throw new Error(json.error||'Erro ao processar solicitação.');
+  return json;
+}
+
+async function carregarUsuarios(){
+  try{
+    var{data,error}=await sb.from('perfis').select('*, filiais(nome)').order('nome');
+    if(error)throw error;
+    USUARIOS=data;
+    renderUsuariosTable();
+    showToast('Lista de usuários atualizada.');
+  }catch(err){showDbError(err);}
+}
+function renderUsuariosTable(){
+  var search=(document.getElementById('usr-search').value||'').toLowerCase();
+  var list=USUARIOS.filter(function(u){return!search||u.nome.toLowerCase().includes(search)||(u.login||'').toLowerCase().includes(search);});
+  var tb=document.getElementById('usr-tbody');
+  if(!list.length){tb.innerHTML='<tr><td colspan="6"><div class="empty"><i class="ti ti-users-group"></i><p>Nenhum usuário encontrado</p><span>Clique em "Novo usuário" para criar o primeiro acesso.</span></div></td></tr>';return;}
+  tb.innerHTML=list.map(function(u){
+    var roleB=u.role==='admin'?'<span class="badge b-orange"><i class="ti ti-shield-check" style="font-size:10px"></i>Admin</span>':'<span class="badge b-blue">Almoxarife</span>';
+    var filB=u.filiais?esc(u.filiais.nome):(u.role==='admin'?'<span style="color:var(--slate-light)">Todas</span>':'<span style="color:var(--red)">Não vinculada</span>');
+    return'<tr><td><div class="cell-primary">'+esc(u.nome)+'</div></td><td><span class="cell-mono">'+esc(u.login||'—')+'</span></td><td>'+roleB+'</td><td>'+filB+'</td><td style="font-size:12px;color:var(--slate)">'+fmt((u.created_at||'').split('T')[0])+'</td><td><button class="btn btn-sm btn-ghost" onclick="openUsrModal(\''+u.id+'\')" title="Editar acesso"><i class="ti ti-edit"></i></button></td></tr>';
+  }).join('');
+}
+
+// Abre o modal em modo CRIAÇÃO (login + senha + nome)
+function openUsrCreateModal(){
+  editingId.usr=null;
+  document.getElementById('modal-usr-title').textContent='Novo usuário';
+  document.getElementById('usr-create-fields').style.display='block';
+  document.getElementById('usr-nome-display-group').style.display='none';
+  document.getElementById('usr-novo-nome').value='';
+  document.getElementById('usr-novo-login').value='';
+  document.getElementById('usr-novo-senha').value='';
+  document.getElementById('usr-role').value='almoxarife';
+  preencherSelectFilialAdmin('usr-filial');
+  toggleUsrFilialField();
+  document.getElementById('usr-save-btn').innerHTML='<i class="ti ti-user-plus"></i>Criar usuário';
+  openModal('modal-usr');
+}
+// Abre o modal em modo EDIÇÃO (só papel/filial — login e senha não mudam aqui)
+function openUsrModal(userId){
+  var u=USUARIOS.find(function(x){return x.id===userId;});
+  if(!u)return;
+  editingId.usr=userId;
+  document.getElementById('modal-usr-title').textContent='Editar acesso do usuário';
+  document.getElementById('usr-create-fields').style.display='none';
+  document.getElementById('usr-nome-display-group').style.display='flex';
+  document.getElementById('usr-nome-display').value=u.nome+(u.login?' ('+u.login+')':'');
+  document.getElementById('usr-role').value=u.role;
+  preencherSelectFilialAdmin('usr-filial');
+  if(u.filial_id)document.getElementById('usr-filial').value=u.filial_id;
+  toggleUsrFilialField();
+  document.getElementById('usr-save-btn').innerHTML='<i class="ti ti-device-floppy"></i>Salvar acesso';
+  openModal('modal-usr');
+}
+function toggleUsrFilialField(){
+  var role=document.getElementById('usr-role').value;
+  document.getElementById('usr-filial-group').style.display=role==='admin'?'none':'flex';
+}
+// Select de filial específico para o modal de usuário: sempre lista todas (quem edita aqui é sempre admin)
+function preencherSelectFilialAdmin(selectId){
+  var sel=document.getElementById(selectId);
+  sel.innerHTML='<option value="">Selecione a filial...</option>'+FILIAIS.map(function(f){return'<option value="'+f.id+'">'+esc(f.nome)+'</option>';}).join('');
+}
+async function salvarUsr(){
+  var role=document.getElementById('usr-role').value;
+  var filialId=document.getElementById('usr-filial').value;
+  if(role==='almoxarife'&&!filialId){alert('Selecione uma filial para o almoxarife — sem ela, ele não conseguirá ver nenhum dado.');return;}
+
+  var btn=document.getElementById('usr-save-btn');
+  var originalHtml=btn.innerHTML;
+  btn.disabled=true;btn.innerHTML='<i class="ti ti-loader-2 login-spin"></i> Processando...';
+
+  try{
+    if(editingId.usr){
+      // modo edição: só atualiza papel/filial
+      var{error}=await sb.from('perfis').update({role:role,filial_id:role==='admin'?null:parseInt(filialId)}).eq('id',editingId.usr);
+      if(error)throw error;
+      closeModal('modal-usr');
+      await carregarUsuarios();
+      showToast('Acesso do usuário atualizado.');
+    }else{
+      // modo criação: chama a Edge Function (precisa de Service Role, só roda no servidor)
+      var nome=document.getElementById('usr-novo-nome').value.trim();
+      var login=document.getElementById('usr-novo-login').value.trim();
+      var senha=document.getElementById('usr-novo-senha').value;
+      if(!nome||!login||!senha){alert('Preencha nome, login e senha.');btn.disabled=false;btn.innerHTML=originalHtml;return;}
+      await chamarEdgeFunction('admin-create-user',{nome:nome,login:login,senha:senha,role:role,filialId:filialId||null});
+      closeModal('modal-usr');
+      await carregarUsuarios();
+      showToast('Usuário "'+normalizeLogin(login)+'" criado com sucesso.');
+    }
+  }catch(err){
+    alert(err.message||'Erro ao salvar usuário.');
+  }finally{
+    btn.disabled=false;btn.innerHTML=originalHtml;
+  }
+}
+
+// ══════════════════════════════════════════
+//  MOBILE NAVIGATION
+// ══════════════════════════════════════════
+var MOBILE_PAGES_IN_BOTTOM=['dashboard','equipamentos','colaboradores','cautelas'];
+var MOBILE_PAGES_IN_MORE=['manutencao','relatorios','historico'];
+var currentPage='dashboard';
+
+function isMobile(){return window.innerWidth<=768;}
+
+function navToMobile(page){
+  currentPage=page;
+  // chama navTo original com o elemento da sidebar (desktop) — reutiliza lógica
+  navTo(page, document.querySelector('.nav-item[onclick*="'+page+'"]'));
+  // atualiza bottom nav
+  document.querySelectorAll('.bnav-item').forEach(function(b){b.classList.remove('active');});
+  var bnId='bn-'+page;
+  var bn=document.getElementById(bnId);
+  if(bn){bn.classList.add('active');}
+  else{document.getElementById('bn-more').classList.add('active');}
+  // atualiza more menu
+  document.querySelectorAll('.more-menu-item').forEach(function(m){m.classList.remove('active');});
+  var bm=document.getElementById('bm-'+page);
+  if(bm)bm.classList.add('active');
+}
+
+function toggleMore(){
+  var m=document.getElementById('more-menu');
+  var b=document.getElementById('more-backdrop');
+  if(m.classList.contains('open')){m.classList.remove('open');b.classList.remove('open');}
+  else{m.classList.add('open');b.classList.add('open');}
+}
+function closeMore(){
+  document.getElementById('more-menu').classList.remove('open');
+  document.getElementById('more-backdrop').classList.remove('open');
+}
+
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+document.getElementById('topbar-date').textContent=new Date().toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'short',year:'numeric'});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')document.querySelectorAll('.modal-overlay.open').forEach(function(m){m.classList.remove('open');});});
+document.querySelectorAll('.modal-overlay').forEach(function(o){o.addEventListener('click',function(e){if(e.target===o)o.classList.remove('open');});});
+
+(async function init(){
+  await checkExistingSession();
+})();
+</script>
+</body>
+</html>
