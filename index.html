@@ -124,6 +124,9 @@ body{font-family:'Inter',system-ui,sans-serif;font-size:14px;color:var(--text);b
 .topbar-title{font-size:17px;font-weight:700;color:var(--text);letter-spacing:-.3px}
 .topbar-breadcrumb{font-size:12px;color:var(--slate-light)}
 .topbar-right{display:flex;align-items:center;gap:10px}
+.filial-filter-wrap{display:flex;align-items:center;gap:6px;background:var(--bg);padding:4px 10px 4px 12px;border-radius:8px;border:1px solid var(--border)}
+.filial-filter-wrap select{background:transparent;border:none;cursor:pointer;color:var(--text)}
+.filial-filter-wrap select:focus{outline:none}
 .topbar-date{font-size:12px;color:var(--slate);background:var(--bg);padding:5px 10px;border-radius:6px;font-weight:500}
 .topbar-badge{
   background:var(--orange-pale);color:var(--orange);
@@ -661,6 +664,12 @@ textarea.form-input{resize:vertical;min-height:72px;line-height:1.5}
         </div>
       </div>
       <div class="topbar-right">
+        <div class="filial-filter-wrap admin-only" id="filial-filter-wrap" style="display:none">
+          <i class="ti ti-building-factory-2" style="font-size:14px;color:var(--slate)"></i>
+          <select class="filter" id="filial-filter-select" onchange="onFilialFilterChange()" style="font-size:12px;padding:6px 10px;font-weight:600">
+            <option value="">Todas as filiais</option>
+          </select>
+        </div>
         <span class="topbar-date" id="topbar-date"></span>
         <span class="topbar-badge"><i class="ti ti-circle-filled" style="font-size:8px;vertical-align:1px"></i> Sistema ativo</span>
       </div>
@@ -1178,6 +1187,7 @@ var sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 var EMAIL_DOMAIN='cautelaos.local';
 var CURRENT_USER=null; // {id, email, nome, role, filialId, filialNome}
 var FILIAIS=[]; // cache de todas as filiais (visível a qualquer autenticado)
+var FILTRO_FILIAL=''; // '' = todas as filiais (só relevante para admin; almoxarife já é restrito por RLS)
 
 function normalizeLogin(raw){
   return(raw||'').trim().toLowerCase()
@@ -1276,8 +1286,19 @@ async function onAuthSuccess(){
 
   // mostra itens de menu exclusivos de admin
   document.querySelectorAll('.admin-only').forEach(function(el){
+    if(el.id==='filial-filter-wrap')return; // tratado abaixo, com lógica própria
     el.style.display=CURRENT_USER.role==='admin'?'':'none';
   });
+
+  // filtro global de filial: só aparece e funciona para admin (almoxarife já é restrito pelo RLS)
+  var filtroWrap=document.getElementById('filial-filter-wrap');
+  if(CURRENT_USER.role==='admin'){
+    filtroWrap.style.display='flex';
+    popularFiltroFilial();
+  }else{
+    filtroWrap.style.display='none';
+    FILTRO_FILIAL=''; // almoxarife nunca filtra — RLS já cuida disso no banco
+  }
 
   document.getElementById('login-screen').style.display='none';
   document.getElementById('app-root').classList.add('ready');
@@ -1323,6 +1344,25 @@ function colToRow(o){return{matricula:o.matricula,nome:o.nome,setor:o.setor,enca
 
 function rowToFil(r){return{id:r.id,nome:r.nome,cidade:r.cidade,uf:r.uf,ativa:r.ativa,criadoEm:r.created_at};}
 function nomeFilial(filialId){var f=FILIAIS.find(function(x){return x.id===filialId;});return f?f.nome:'—';}
+
+// ══════════════════════════════════════════
+//  FILTRO GLOBAL DE FILIAL (admin)
+// ══════════════════════════════════════════
+function popularFiltroFilial(){
+  var sel=document.getElementById('filial-filter-select');
+  var valorAtual=FILTRO_FILIAL;
+  sel.innerHTML='<option value="">Todas as filiais</option>'+FILIAIS.map(function(f){return'<option value="'+f.id+'">'+esc(f.nome)+'</option>';}).join('');
+  sel.value=valorAtual; // preserva a escolha entre navegações/recarregamentos da lista
+}
+function onFilialFilterChange(){
+  FILTRO_FILIAL=document.getElementById('filial-filter-select').value;
+  refreshCurrentPage();
+}
+// Testa se um registro (equipamento, ou objeto com filialId) pertence à filial filtrada.
+// Quando FILTRO_FILIAL é '' (Todas), tudo passa.
+function passaFiltroFilial(filialId){
+  return!FILTRO_FILIAL||String(filialId)===String(FILTRO_FILIAL);
+}
 
 // Preenche um <select> com as filiais disponíveis.
 // Para almoxarife: trava na própria filial (sem opção de trocar).
@@ -1510,7 +1550,8 @@ function renderEqTable(){
   var fS=document.getElementById('eq-f-status').value;
   var fO=document.getElementById('eq-f-origem').value;
   var list=DB.equipamentos.filter(function(e){
-    var ok=!search||(e.nome.toLowerCase().includes(search)||e.serie.toLowerCase().includes(search)||(e.patrimonio&&e.patrimonio.toLowerCase().includes(search)));
+    var ok=passaFiltroFilial(e.filialId);
+    ok=ok&&(!search||(e.nome.toLowerCase().includes(search)||e.serie.toLowerCase().includes(search)||(e.patrimonio&&e.patrimonio.toLowerCase().includes(search))));
     if(fS)ok=ok&&e.status===fS;if(fO)ok=ok&&e.origem===fO;return ok;
   });
   var tb=document.getElementById('eq-tbody');
@@ -1576,7 +1617,8 @@ function renderColTable(){
   var fSe=document.getElementById('col-f-setor').value;
   var fAt=document.getElementById('col-f-ativo').value;
   var list=DB.colaboradores.filter(function(c){
-    var ok=!search||(c.nome.toLowerCase().includes(search)||c.matricula.includes(search));
+    var ok=passaFiltroFilial(c.filialId);
+    ok=ok&&(!search||(c.nome.toLowerCase().includes(search)||c.matricula.includes(search)));
     if(fSe)ok=ok&&c.setor===fSe;if(fAt)ok=ok&&c.ativo===fAt;return ok;
   });
   var tb=document.getElementById('col-tbody');
@@ -1661,7 +1703,8 @@ function renderCauTable(){
   var list=DB.cautelas.filter(function(c){
     var eq=DB.equipamentos.find(function(e){return e.id===c.eqId;});
     var col=DB.colaboradores.find(function(x){return x.id===c.colId;});
-    var ok=!search||((eq&&eq.nome.toLowerCase().includes(search))||(col&&col.nome.toLowerCase().includes(search)));
+    var ok=passaFiltroFilial(eq?eq.filialId:null);
+    ok=ok&&(!search||((eq&&eq.nome.toLowerCase().includes(search))||(col&&col.nome.toLowerCase().includes(search))));
     if(fS)ok=ok&&c.status===fS;return ok;
   }).sort(function(a,b){return b.id-a.id;});
   var tb=document.getElementById('cau-tbody');
@@ -1740,7 +1783,8 @@ function renderManTable(){
   var fT=document.getElementById('man-f-tipo').value;
   var list=DB.manutencao.filter(function(m){
     var eq=DB.equipamentos.find(function(e){return e.id===m.eqId;});
-    var ok=!search||((eq&&eq.nome.toLowerCase().includes(search))||m.os.toLowerCase().includes(search));
+    var ok=passaFiltroFilial(eq?eq.filialId:null);
+    ok=ok&&(!search||((eq&&eq.nome.toLowerCase().includes(search))||m.os.toLowerCase().includes(search)));
     if(fS)ok=ok&&m.status===fS;if(fT)ok=ok&&m.tipo===fT;return ok;
   }).sort(function(a,b){return b.id-a.id;});
   var tb=document.getElementById('man-tbody');
@@ -1759,20 +1803,22 @@ function renderManTable(){
 //  DASHBOARD
 // ══════════════════════════════════════════
 function renderDash(){
-  var total=DB.equipamentos.length;
-  var cauAti=DB.equipamentos.filter(function(e){return e.status==='cautelado';}).length;
-  var almo=DB.equipamentos.filter(function(e){return e.status==='almoxarifado';}).length;
-  var manut=DB.equipamentos.filter(function(e){return e.status==='manutencao';}).length;
+  var eqFiltrados=DB.equipamentos.filter(function(e){return passaFiltroFilial(e.filialId);});
+  var total=eqFiltrados.length;
+  var cauAti=eqFiltrados.filter(function(e){return e.status==='cautelado';}).length;
+  var almo=eqFiltrados.filter(function(e){return e.status==='almoxarifado';}).length;
+  var manut=eqFiltrados.filter(function(e){return e.status==='manutencao';}).length;
   document.getElementById('dash-stats').innerHTML=[
     ['ti-package','Total cadastrado',total,'equipamentos e ferramentas','c-blue'],
     ['ti-clipboard-list','Cautelados',cauAti,'em uso por colaboradores','c-orange'],
     ['ti-building-warehouse','No almoxarifado',almo,'disponíveis para cautela','c-green'],
     ['ti-tool','Em manutenção',manut,'aguardando serviço','c-yellow']
   ].map(function(s){return'<div class="stat-card '+s[4]+'"><div class="stat-icon"><i class="ti '+s[0]+'"></i></div><div class="stat-label">'+s[1]+'</div><div class="stat-value">'+s[2]+'</div><div class="stat-sub">'+s[3]+'</div></div>';}).join('');
-  var recCau=DB.cautelas.filter(function(c){return c.status==='ativa';}).slice(-6).reverse();
+  var eqFiltradosIds=eqFiltrados.map(function(e){return e.id;});
+  var recCau=DB.cautelas.filter(function(c){return c.status==='ativa'&&eqFiltradosIds.includes(c.eqId);}).slice(-6).reverse();
   var tb=document.getElementById('dash-cau-table').querySelector('tbody');
   tb.innerHTML=recCau.length?recCau.map(function(c){var eq=DB.equipamentos.find(function(e){return e.id===c.eqId;})||{nome:'?'};var col=DB.colaboradores.find(function(x){return x.id===c.colId;})||{nome:'?'};return'<tr><td><div class="cell-primary" style="font-size:12px">'+esc(eq.nome)+'</div></td><td style="font-size:12px">'+esc(col.nome)+'</td><td style="font-size:12px">'+fmt(c.saida)+'</td><td>'+locBadge(eq)+'</td></tr>';}).join(''):'<tr><td colspan="4"><div class="empty" style="padding:24px"><i class="ti ti-clipboard" style="font-size:30px"></i><p>Nenhuma cautela ativa</p></div></td></tr>';
-  document.getElementById('dash-loc-list').innerHTML=DB.equipamentos.length?DB.equipamentos.map(function(e){return'<div class="loc-list-item"><span class="loc-name">'+esc(e.nome)+'</span>'+locBadge(e)+'</div>';}).join(''):'<div class="empty" style="padding:20px"><i class="ti ti-map-pin" style="font-size:28px"></i><p>Nenhum equipamento</p></div>';
+  document.getElementById('dash-loc-list').innerHTML=eqFiltrados.length?eqFiltrados.map(function(e){return'<div class="loc-list-item"><span class="loc-name">'+esc(e.nome)+'</span>'+locBadge(e)+'</div>';}).join(''):'<div class="empty" style="padding:20px"><i class="ti ti-map-pin" style="font-size:28px"></i><p>Nenhum equipamento</p></div>';
 }
 
 // ══════════════════════════════════════════
